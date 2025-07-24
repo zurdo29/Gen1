@@ -1,0 +1,15 @@
+{
+  "width": 50,
+  "height": 50,
+  "generationAlgorithm": "perlin",
+  "entities": [
+    {
+      "type": "Enemy",
+      "count": 3
+    },
+    {
+      "type": "Item",
+      "count": 5
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy project files
+COPY ["backend/ProceduralMiniGameGenerator.WebAPI/ProceduralMiniGameGenerator.WebAPI.csproj", "backend/ProceduralMiniGameGenerator.WebAPI/"]
+COPY ["src/ProceduralMiniGameGenerator.csproj", "src/"]
+
+# Restore dependencies
+RUN dotnet restore "backend/ProceduralMiniGameGenerator.WebAPI/ProceduralMiniGameGenerator.WebAPI.csproj"
+
+# Copy source code
+COPY . .
+
+# Build the application
+WORKDIR "/src/backend/ProceduralMiniGameGenerator.WebAPI"
+RUN dotnet build "ProceduralMiniGameGenerator.WebAPI.csproj" -c Release -o /app/build
+
+# Publish stage
+FROM build AS publish
+RUN dotnet publish "ProceduralMiniGameGenerator.WebAPI.csproj" \
+    -c Release \
+    -o /app/publish \
+    /p:UseAppHost=false \
+    --no-restore \
+    --verbosity minimal
+
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+
+# Install curl for health checks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Create non-root user for security
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+WORKDIR /app
+
+# Create necessary directories
+RUN mkdir -p /app/logs /app/temp /app/exports && \
+    chown -R appuser:appuser /app
+
+# Copy published application
+COPY --from=publish /app/publish .
+COPY --chown=appuser:appuser --from=publish /app/publish .
+
+# Set up environment
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV DOTNET_RUNNING_IN_CONTAINER=true
+ENV DOTNET_USE_POLLING_FILE_WATCHER=true
+ENV ASPNETCORE_URLS=http://+:80
+
+# Security hardening
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+ENV DOTNET_EnableDiagnostics=0
+
+# Switch to non-root user
+USER appuser
+
+EXPOSE 80
+EXPOSE 443
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:80/api/health || exit 1
+
+ENTRYPOINT ["dotnet", "ProceduralMiniGameGenerator.WebAPI.dll"]

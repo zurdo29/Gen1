@@ -1,0 +1,91 @@
+{
+  "width": 80,
+  "height": 60,
+  "seed": 12345,
+  "generationAlgorithm": "perlin",
+  "algorithmParameters": {
+    "scale": 0.1,
+    "octaves": 4,
+    "persistence": 0.5,
+    "lacunarity": 2.0,
+    "waterLevel": 0.3
+  },
+  "entities": [
+    {
+      "type": "Enemy",
+      "count": 5,
+      "minDistance": 3.0,
+      "maxDistanceFromPlayer": 50.0,
+      "placementStrategy": "random",
+      "properties": {
+        "health": 50,
+        "damage": 10,
+        "speed": 2.0
+      }
+    },
+    {
+      "type": "Item",
+      "count": 8,
+      "minDistance": 2.0,
+      "maxDistanceFromPlayer": 100.0,
+      "placementStrategy": "spread",
+      "properties": {
+        "itemType": "health_potion",
+        "value": 25
+      }
+    },
+    {
+      "type": "PowerUp",
+      "count": 3,
+      "minDistance": 5.0,
+      "maxDistanceFromPlayer": 80.0,
+      "placementStrategy": "clustered",
+      "properties": {
+        "points": 100,
+        "rarity": "common"
+      }
+    }
+  ],
+  "visualTheme": {
+    "themeName": "forest",
+    "colorPalette": {
+      "ground": "#8B4513",
+      "wall": "#654321",
+      "water": "#4169E1",
+      "grass": "#228B22",
+      "player": "#FFD700",
+      "enemy": "#DC143C",
+      "item": "#32CD32"
+    },
+    "tileSprites": {
+      "ground": "sprites/tiles/ground_forest.png",
+      "wall": "sprites/tiles/wall_stone.png",
+      "water": "sprites/tiles/water_blue.png",
+      "grass": "sprites/tiles/grass_green.png"
+    },
+    "entitySprites": {
+      "player": "sprites/entities/player_knight.png",
+      "enemy": "sprites/entities/goblin.png",
+      "item": "sprites/entities/potion.png",
+      "powerup": "sprites/entities/chest.png"
+    },
+    "effectSettings": {
+      "enableParticles": true,
+      "ambientLighting": 0.8,
+      "shadowIntensity": 0.6
+    }
+  },
+  "gameplay": {
+    "playerSpeed": 6.0,
+    "playerHealth": 150,
+    "difficulty": "normal",
+    "timeLimit": 300.0,
+    "victoryConditions": ["reach_exit", "collect_all_items"],
+    "mechanics": {
+      "enableJumping": false,
+      "enableShooting": true,
+      "respawnOnDeath": true,
+      "checkpointSystem": true
+    }
+  }
+}

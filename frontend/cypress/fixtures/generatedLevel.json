@@ -1,0 +1,52 @@
+{
+  "id": "test-level-1",
+  "width": 20,
+  "height": 20,
+  "terrain": [
+    ["grass", "grass", "grass", "tree", "tree", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "tree", "tree", "grass", "grass", "grass", "tree", "grass", "grass"],
+    ["grass", "tree", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "tree"],
+    ["tree", "grass", "grass", "grass", "tree", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "tree", "grass", "grass", "grass"],
+    ["grass", "grass", "tree", "grass", "grass", "grass", "tree", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "tree", "grass"],
+    ["grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["tree", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "tree"],
+    ["grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass"],
+    ["grass", "grass", "tree", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "tree", "grass"],
+    ["tree", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "tree"],
+    ["grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass"],
+    ["grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["tree", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "tree", "grass"],
+    ["grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["grass", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass"],
+    ["grass", "tree", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "tree"],
+    ["tree", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass"],
+    ["grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass"],
+    ["grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "grass", "tree", "grass", "grass", "grass", "grass", "grass", "grass", "tree"]
+  ],
+  "entities": [
+    {
+      "id": "entity-1",
+      "type": "player-spawn",
+      "position": { "x": 5, "y": 5 },
+      "properties": {}
+    },
+    {
+      "id": "entity-2",
+      "type": "enemy",
+      "position": { "x": 15, "y": 15 },
+      "properties": { "health": 100 }
+    },
+    {
+      "id": "entity-3",
+      "type": "pickup",
+      "position": { "x": 8, "y": 12 },
+      "properties": { "type": "health", "value": 25 }
+    }
+  ],
+  "metadata": {
+    "generatedAt": "2024-01-15T10:30:00Z",
+    "generationTime": 1500,
+    "seed": 12345
+  }
+}

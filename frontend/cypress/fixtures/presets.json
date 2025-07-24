@@ -1,0 +1,58 @@
+[
+  {
+    "id": "preset-1",
+    "name": "Forest Level",
+    "description": "Dense forest with enemies",
+    "config": {
+      "terrain": {
+        "generator": "perlin-noise",
+        "width": 20,
+        "height": 20,
+        "seed": 12345,
+        "scale": 0.1,
+        "octaves": 4
+      },
+      "entities": {
+        "placer": "random",
+        "density": 0.1,
+        "types": ["enemy", "pickup", "obstacle"]
+      },
+      "visual": {
+        "theme": "forest",
+        "tileSize": 32
+      },
+      "gameplay": {
+        "difficulty": "medium",
+        "playerSpawns": 1
+      }
+    }
+  },
+  {
+    "id": "preset-2",
+    "name": "Desert Level",
+    "description": "Open desert terrain",
+    "config": {
+      "terrain": {
+        "generator": "perlin-noise",
+        "width": 30,
+        "height": 30,
+        "seed": 54321,
+        "scale": 0.05,
+        "octaves": 3
+      },
+      "entities": {
+        "placer": "random",
+        "density": 0.05,
+        "types": ["cactus", "oasis", "sandstorm"]
+      },
+      "visual": {
+        "theme": "desert",
+        "tileSize": 32
+      },
+      "gameplay": {
+        "difficulty": "hard",
+        "playerSpawns": 1
+      }
+    }
+  }
+]

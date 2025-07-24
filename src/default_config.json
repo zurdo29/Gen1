@@ -1,0 +1,42 @@
+{
+  "Width": 40,
+  "Height": 30,
+  "Seed": 12345,
+  "GenerationAlgorithm": "perlin",
+  "AlgorithmParameters": {
+    "scale": 0.1,
+    "octaves": 4
+  },
+  "TerrainTypes": [
+    "ground",
+    "wall",
+    "water"
+  ],
+  "Entities": [
+    {
+      "Type": 1,
+      "Count": 3,
+      "MinDistance": 5,
+      "MaxDistanceFromPlayer": 3.4028235E+38,
+      "Properties": {},
+      "PlacementStrategy": "random"
+    }
+  ],
+  "VisualTheme": {
+    "ThemeName": "default",
+    "ColorPalette": {},
+    "TileSprites": {},
+    "EntitySprites": {},
+    "EffectSettings": {}
+  },
+  "Gameplay": {
+    "PlayerSpeed": 5,
+    "PlayerHealth": 100,
+    "Difficulty": "normal",
+    "TimeLimit": 0,
+    "VictoryConditions": [
+      "reach_exit"
+    ],
+    "Mechanics": {}
+  }
+}

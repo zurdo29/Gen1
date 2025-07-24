@@ -1,0 +1,38 @@
+{
+  "name": "procedural-minigame-generator-comprehensive-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive integration tests for the Web Level Editor",
+  "scripts": {
+    "test:comprehensive": "scripts/run-comprehensive-tests.bat",
+    "test:backend": "cd backend && dotnet test --filter Category=Integration",
+    "test:frontend": "cd frontend && npm run test:integration",
+    "test:e2e": "cd test-runner && dotnet test",
+    "test:performance": "cd backend && dotnet run --project ProceduralMiniGameGenerator.WebAPI.Tests -- --performance-test",
+    "start:backend": "cd backend && dotnet run --project ProceduralMiniGameGenerator.WebAPI",
+    "start:frontend": "cd frontend && npm start",
+    "build:all": "npm run build:backend && npm run build:frontend",
+    "build:backend": "cd backend && dotnet build --configuration Release",
+    "build:frontend": "cd frontend && npm run build",
+    "setup:test-env": "npm run build:all && npm run start:backend && npm run start:frontend"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3",
+    "@tanstack/react-query": "^4.29.0",
+    "vitest": "^0.34.0",
+    "selenium-webdriver": "^4.10.0",
+    "chromedriver": "^114.0.0"
+  },
+  "keywords": [
+    "integration-testing",
+    "web-level-editor",
+    "procedural-generation",
+    "aspnet-core",
+    "react",
+    "selenium",
+    "comprehensive-testing"
+  ],
+  "author": "Web Level Editor Team",
+  "license": "MIT"
+}
