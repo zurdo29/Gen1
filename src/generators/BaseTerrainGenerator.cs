@@ -90,7 +90,7 @@ namespace ProceduralMiniGameGenerator.Generators
                 // Calculate terrain statistics
                 var terrainStats = CalculateTerrainStatistics(tileMap);
                 
-                _logger?.LogGeneration($"TerrainGeneration_{algorithmName} (Config: {operationId})", stopwatch.Elapsed, new {
+                _logger?.LogGeneration(operationId, $"TerrainGeneration_{algorithmName}", stopwatch.Elapsed, new {
                     Algorithm = algorithmName,
                     Width = tileMap.Width,
                     Height = tileMap.Height,

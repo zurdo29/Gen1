@@ -6,23 +6,38 @@ namespace ProceduralMiniGameGenerator.Core
     public enum LogLevel
     {
         /// <summary>
+        /// Trace level for very detailed diagnostic information
+        /// </summary>
+        Trace = 0,
+        
+        /// <summary>
         /// Debug level for detailed diagnostic information
         /// </summary>
-        Debug = 0,
+        Debug = 1,
         
         /// <summary>
         /// Information level for general application flow
         /// </summary>
-        Info = 1,
+        Information = 2,
         
         /// <summary>
         /// Warning level for potentially harmful situations
         /// </summary>
-        Warning = 2,
+        Warning = 3,
         
         /// <summary>
         /// Error level for error events that might still allow the application to continue
         /// </summary>
-        Error = 3
+        Error = 4,
+        
+        /// <summary>
+        /// Critical level for critical errors that cause the application to terminate
+        /// </summary>
+        Critical = 5,
+        
+        /// <summary>
+        /// None level to disable logging
+        /// </summary>
+        None = 6
     }
 }

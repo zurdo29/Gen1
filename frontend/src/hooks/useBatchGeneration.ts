@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { BatchGenerationRequest, _JobStatus, Level } from '../types';
+import { BatchGenerationRequest, JobStatus, Level } from '../types';
 import { apiService } from '../services/api';
 
 interface BatchResult {

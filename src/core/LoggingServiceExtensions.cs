@@ -31,7 +31,7 @@ namespace ProceduralMiniGameGenerator.Core
             {
                 var basePlacer = provider.GetRequiredService<EntityPlacer>();
                 var loggerService = provider.GetRequiredService<ILoggerService>();
-                return new LoggingEntityPlacer(basePlacer, loggerService);
+                return (IEntityPlacer)new LoggingEntityPlacer(basePlacer, loggerService);
             });
             
             services.AddTransient<ILevelAssembler>(provider =>

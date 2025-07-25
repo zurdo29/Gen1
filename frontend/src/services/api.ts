@@ -8,7 +8,9 @@ import {
   ExportFormat,
   ExportOptions,
   JobStatus,
-  BatchGenerationRequest
+  BatchGenerationRequest,
+  PreviewRequestResponse,
+  PreviewStatus
 } from '../types';
 
 class ApiService {

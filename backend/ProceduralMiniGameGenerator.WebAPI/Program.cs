@@ -1,10 +1,17 @@
 using Hangfire;
 using Hangfire.MemoryStorage;
 using Serilog;
+using FluentValidation;
 using ProceduralMiniGameGenerator.WebAPI.Middleware;
 using ProceduralMiniGameGenerator.WebAPI.Services;
+using ProceduralMiniGameGenerator.WebAPI.Configuration;
+using ProceduralMiniGameGenerator.WebAPI.Validators;
+using ProceduralMiniGameGenerator.WebAPI.HealthChecks;
+using ProceduralMiniGameGenerator.Models;
+using ProceduralMiniGameGenerator.WebAPI.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Asp.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,8 +100,20 @@ builder.Services.AddHangfire(configuration => configuration
 
 builder.Services.AddHangfireServer();
 
-// Add memory caching
-builder.Services.AddMemoryCache();
+// Configure strongly-typed configuration
+builder.Services.Configure<ApiConfiguration>(
+    builder.Configuration.GetSection(ApiConfiguration.SectionName));
+builder.Services.Configure<GenerationConfiguration>(
+    builder.Configuration.GetSection(GenerationConfiguration.SectionName));
+
+// Add memory caching with size limit
+builder.Services.AddMemoryCache(options =>
+{
+    options.SizeLimit = builder.Configuration.GetValue<int>("Api:MaxCacheSizeMB", 100) * 1024 * 1024; // Convert MB to bytes
+});
+
+// Add FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<GenerationConfigValidator>();
 
 // Add custom logging service
 builder.Services.AddScoped<ProceduralMiniGameGenerator.WebAPI.Services.ILoggerService, ProceduralMiniGameGenerator.WebAPI.Services.LoggerService>();
@@ -111,9 +130,16 @@ builder.Services.AddScoped<ProceduralMiniGameGenerator.WebAPI.Services.ISocialPr
 // Add configuration management service
 builder.Services.AddScoped<ProceduralMiniGameGenerator.WebAPI.Services.IConfigurationService, ProceduralMiniGameGenerator.WebAPI.Services.ConfigurationService>();
 
-// Add generation services
+// Add generation services (new architecture)
 builder.Services.AddScoped<ProceduralMiniGameGenerator.Configuration.IConfigurationParser, ProceduralMiniGameGenerator.WebAPI.Services.SimpleConfigurationParser>();
 builder.Services.AddScoped<ProceduralMiniGameGenerator.Generators.IGenerationManager, ProceduralMiniGameGenerator.WebAPI.Services.SimpleGenerationManager>();
+
+// Add new focused services
+builder.Services.AddScoped<ILevelGenerationService, LevelGenerationService>();
+builder.Services.AddScoped<IBatchGenerationService, BatchGenerationService>();
+builder.Services.AddScoped<IJobStatusService, JobStatusService>();
+
+// Add legacy services for backward compatibility
 builder.Services.AddScoped<ProceduralMiniGameGenerator.WebAPI.Services.IGenerationService, ProceduralMiniGameGenerator.WebAPI.Services.GenerationService>();
 
 // Add core export service
@@ -138,6 +164,25 @@ builder.Services.AddResponseCaching();
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo("./keys"))
     .SetApplicationName("ProceduralMiniGameGenerator");
+
+// Add API versioning
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new HeaderApiVersionReader("X-Version"));
+}).AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
+// Add health checks
+builder.Services.AddHealthChecks()
+    .AddCheck<GenerationServiceHealthCheck>("generation-service")
+    .AddCheck<CacheHealthCheck>("memory-cache");
 
 // Add SignalR for real-time updates
 builder.Services.AddSignalR();
@@ -180,6 +225,9 @@ app.UseRequestLogging();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Map health checks
+app.MapHealthChecks("/health");
 
 // Map SignalR hubs
 app.MapHub<ProceduralMiniGameGenerator.WebAPI.Hubs.GenerationHub>("/hubs/generation");

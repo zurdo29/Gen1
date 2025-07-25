@@ -25,7 +25,7 @@ namespace ProceduralMiniGameGenerator.Tests
 
         public void Info(string message)
         {
-            Log(LogLevel.Info, message);
+            Log(LogLevel.Information, message);
         }
 
         public void Warning(string message)

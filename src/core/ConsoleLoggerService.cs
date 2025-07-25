@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 namespace ProceduralMiniGameGenerator.Core
 {
     /// <summary>
-    /// Console-based implementation of ISimpleLoggerService for the console application
+    /// Console-based implementation of ISimpleLoggerService and ILoggerService for the console application
     /// </summary>
-    public class ConsoleLoggerService : ISimpleLoggerService
+    public class ConsoleLoggerService : ISimpleLoggerService, ILoggerService
     {
         private readonly string _scope;
         private readonly object _context;
@@ -69,12 +69,13 @@ namespace ProceduralMiniGameGenerator.Core
         /// <summary>
         /// Logs generation step completion
         /// </summary>
-        public void LogGeneration(string step, TimeSpan duration, object metadata = null)
+        public void LogGeneration(string operationId, string step, TimeSpan duration, object metadata = null)
         {
             var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
             var scopePrefix = !string.IsNullOrEmpty(_scope) ? $"[{_scope}] " : "";
             
             Console.WriteLine($"[{timestamp}] [GENERATION] {scopePrefix}{step} completed in {duration.TotalMilliseconds:F2}ms");
+            Console.WriteLine($"  Operation ID: {operationId}");
             
             if (metadata != null)
             {
@@ -99,6 +100,7 @@ namespace ProceduralMiniGameGenerator.Core
             var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
             var scopePrefix = !string.IsNullOrEmpty(_scope) ? $"[{_scope}] " : "";
             
+            // Use string interpolation for better performance
             Console.WriteLine($"[{timestamp}] [{level}] {scopePrefix}{message}");
             
             if (context != null)
@@ -112,12 +114,12 @@ namespace ProceduralMiniGameGenerator.Core
         /// <summary>
         /// Logs a message with structured context (async version for compatibility)
         /// </summary>
-        public Task LogAsync(LogLevel level, string message, object context = null)
+        public Task LogAsync(LogLevel level, string message, object? context = null)
         {
             string levelString = level switch
             {
                 LogLevel.Debug => "DEBUG",
-                LogLevel.Info => "INFO", 
+                LogLevel.Information => "INFO", 
                 LogLevel.Warning => "WARNING",
                 LogLevel.Error => "ERROR",
                 _ => level.ToString().ToUpper()
@@ -127,29 +129,12 @@ namespace ProceduralMiniGameGenerator.Core
             return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Logs generation operation with performance metrics
-        /// </summary>
-        public Task LogGenerationAsync(string configId, string step, TimeSpan duration, object metadata = null)
-        {
-            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
-            var scopePrefix = !string.IsNullOrEmpty(_scope) ? $"[{_scope}] " : "";
-            
-            Console.WriteLine($"[{timestamp}] [GENERATION] {scopePrefix}{step} completed in {duration.TotalMilliseconds:F2}ms");
-            Console.WriteLine($"  Config ID: {configId}");
-            
-            if (metadata != null)
-            {
-                Console.WriteLine($"  Metadata: {SerializeContext(metadata)}");
-            }
-            
-            return Task.CompletedTask;
-        }
+
 
         /// <summary>
         /// Logs error with context preservation
         /// </summary>
-        public Task LogErrorAsync(Exception exception, string context, object additionalData = null)
+        public Task LogErrorAsync(Exception exception, string context, object? additionalData = null)
         {
             var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
             var scopePrefix = !string.IsNullOrEmpty(_scope) ? $"[{_scope}] " : "";
@@ -173,7 +158,7 @@ namespace ProceduralMiniGameGenerator.Core
         /// <summary>
         /// Logs performance metrics for operations
         /// </summary>
-        public Task LogPerformanceAsync(string operation, TimeSpan duration, object metrics = null)
+        public Task LogPerformanceAsync(string operation, TimeSpan duration, object? metrics = null)
         {
             var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
             var scopePrefix = !string.IsNullOrEmpty(_scope) ? $"[{_scope}] " : "";
@@ -185,6 +170,64 @@ namespace ProceduralMiniGameGenerator.Core
                 Console.WriteLine($"  Metrics: {SerializeContext(metrics)}");
             }
             
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Logs generation-specific events
+        /// </summary>
+        public Task LogGenerationAsync(string configId, string operation, TimeSpan duration, object? metrics = null)
+        {
+            var timestamp = DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            var scopePrefix = !string.IsNullOrEmpty(_scope) ? $"[{_scope}] " : "";
+            
+            Console.WriteLine($"[{timestamp}] [GENERATION] {scopePrefix}{operation}: {duration.TotalMilliseconds:F2}ms");
+            Console.WriteLine($"  Config ID: {configId}");
+            
+            if (metrics != null)
+            {
+                Console.WriteLine($"  Metrics: {SerializeContext(metrics)}");
+            }
+            
+            return Task.CompletedTask;
+        }
+
+        // Additional ILoggerService methods
+        public Task LogDebugAsync(string message, object? context = null)
+        {
+            LogMessage("DEBUG", message, context);
+            return Task.CompletedTask;
+        }
+
+        public Task LogInfoAsync(string message, object? context = null)
+        {
+            LogMessage("INFO", message, context);
+            return Task.CompletedTask;
+        }
+
+        public Task LogWarningAsync(string message, object? context = null)
+        {
+            LogMessage("WARNING", message, context);
+            return Task.CompletedTask;
+        }
+
+        public Task LogErrorAsync(string message, object? context = null)
+        {
+            LogMessage("ERROR", message, context);
+            return Task.CompletedTask;
+        }
+
+        public Task LogErrorAsync(string message, Exception exception, object? context = null)
+        {
+            LogMessage("ERROR", message, context);
+            if (exception != null)
+            {
+                Console.WriteLine($"  Exception: {exception.GetType().Name}: {exception.Message}");
+                if (exception.StackTrace != null)
+                {
+                    Console.WriteLine($"  Stack Trace: {exception.StackTrace}");
+                }
+            }
             return Task.CompletedTask;
         }
 

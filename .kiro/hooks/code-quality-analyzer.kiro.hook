@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "name": "Code Quality Analyzer",
+  "description": "Monitors source code files for changes and analyzes modified code for potential improvements including code smells, design patterns, and best practices. Generates suggestions for improving code quality while maintaining existing functionality.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/**/*.cs",
+      "backend/**/*.cs",
+      "frontend/src/**/*.ts",
+      "frontend/src/**/*.tsx",
+      "*.cs",
+      "*.ts",
+      "*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Analyze the modified code files for potential improvements. Focus on:\n\n1. **Code Smells**: Identify long methods, large classes, duplicate code, complex conditionals, and other maintainability issues\n2. **Design Patterns**: Suggest appropriate design patterns that could improve the code structure\n3. **Best Practices**: Check adherence to C# and TypeScript/React best practices based on the technology stack\n4. **Performance**: Identify potential performance optimizations\n5. **Readability**: Suggest improvements for code clarity and documentation\n6. **Maintainability**: Recommend refactoring opportunities to reduce technical debt\n\nFor each suggestion:\n- Explain the current issue clearly\n- Provide specific improvement recommendations\n- Show code examples where helpful\n- Prioritize suggestions by impact (High/Medium/Low)\n- Ensure suggestions maintain existing functionality\n\nUse sequential thinking to thoroughly analyze the code context and provide comprehensive, actionable feedback that aligns with the project's ASP.NET Core 8, React 18 + TypeScript architecture."
+  }
+}

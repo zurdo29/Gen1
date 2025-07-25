@@ -1,48 +1,53 @@
 namespace ProceduralMiniGameGenerator.WebAPI.Models
 {
     /// <summary>
-    /// Status of a background job
+    /// Represents the status of a background job
     /// </summary>
     public class JobStatus
     {
-        /// <summary>
-        /// Unique job identifier
-        /// </summary>
         public string JobId { get; set; } = string.Empty;
-        
-        /// <summary>
-        /// Current job status
-        /// </summary>
-        public string Status { get; set; } = "pending"; // "pending", "running", "completed", "failed"
-        
-        /// <summary>
-        /// Progress percentage (0-100)
-        /// </summary>
-        public int Progress { get; set; } = 0;
-        
-        /// <summary>
-        /// Error message if job failed
-        /// </summary>
-        public string? ErrorMessage { get; set; }
-        
-        /// <summary>
-        /// Job result data when completed
-        /// </summary>
-        public object? Result { get; set; }
-        
-        /// <summary>
-        /// Job creation timestamp
-        /// </summary>
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        
-        /// <summary>
-        /// Job completion timestamp
-        /// </summary>
+        public JobType JobType { get; set; }
+        public JobStatusType Status { get; set; }
+        public int Progress { get; set; }
+        public string? Message { get; set; }
+        public DateTime CreatedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
-        
-        /// <summary>
-        /// Additional metadata about the job
-        /// </summary>
-        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+        public object? Result { get; set; }
+        public string? ErrorMessage { get; set; }
+        public JobMetadata? Metadata { get; set; }
+    }
+
+    /// <summary>
+    /// Strongly-typed job metadata
+    /// </summary>
+    public class JobMetadata
+    {
+        public string? SessionId { get; set; }
+        public int? TotalItems { get; set; }
+        public int? ProcessedItems { get; set; }
+        public Dictionary<string, string>? AdditionalData { get; set; }
+    }
+
+    /// <summary>
+    /// Job type enumeration
+    /// </summary>
+    public enum JobType
+    {
+        Generation,
+        BatchGeneration,
+        Preview,
+        Export
+    }
+
+    /// <summary>
+    /// Job status enumeration
+    /// </summary>
+    public enum JobStatusType
+    {
+        Pending,
+        Running,
+        Completed,
+        Failed,
+        Cancelled
     }
 }

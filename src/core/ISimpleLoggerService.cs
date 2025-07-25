@@ -30,11 +30,16 @@ namespace ProceduralMiniGameGenerator.Core
         /// <summary>
         /// Logs generation step completion
         /// </summary>
-        void LogGeneration(string step, TimeSpan duration, object metadata = null);
+        void LogGeneration(string operationId, string step, TimeSpan duration, object metadata = null);
         
         /// <summary>
         /// Creates a scoped logger with additional context
         /// </summary>
         ISimpleLoggerService CreateScoped(string scope, object context = null);
+
+        /// <summary>
+        /// Logs error with context preservation (async version)
+        /// </summary>
+        System.Threading.Tasks.Task LogErrorAsync(Exception exception, string context, object additionalData = null);
     }
 }

@@ -270,7 +270,7 @@ namespace ProceduralMiniGameGenerator.Generators
 
             return tileCounts.ToDictionary(
                 kvp => kvp.Key.ToString(),
-                kvp => new { 
+                kvp => (object)new { 
                     Count = kvp.Value, 
                     Percentage = (kvp.Value * 100.0) / totalTiles,
                     Density = (double)kvp.Value / totalTiles

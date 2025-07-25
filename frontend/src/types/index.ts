@@ -197,6 +197,12 @@ export interface PreviewRequestResponse {
   message: string;
 }
 
+export interface PreviewRequestResponse {
+  sessionId: string;
+  status: string;
+  message: string;
+}
+
 export interface PreviewStatus {
   sessionId: string;
   status: 'idle' | 'pending' | 'generating' | 'completed' | 'error' | 'cancelled';

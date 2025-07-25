@@ -85,7 +85,7 @@ namespace ProceduralMiniGameGenerator.Generators
                 // Calculate assembly statistics
                 var assemblyStats = CalculateAssemblyStatistics(level, terrain, entities, config);
                 
-                _logger?.LogGeneration($"LevelAssembly (Config: {operationId})", stopwatch.Elapsed, new {
+                _logger?.LogGeneration(operationId, "LevelAssembly", stopwatch.Elapsed, new {
                     LevelName = level.Name,
                     TerrainSize = $"{terrain.Width}x{terrain.Height}",
                     EntityCount = entities.Count,
@@ -161,7 +161,7 @@ namespace ProceduralMiniGameGenerator.Generators
                     ColorCount = theme.Colors?.Count ?? 0,
                     TileSpriteCount = theme.TileSprites?.Count ?? 0,
                     EntitySpriteCount = theme.EntitySprites?.Count ?? 0,
-                    EffectCount = theme.Effects?.Count ?? 0
+                    PropertiesCount = theme.Properties?.Count ?? 0
                 });
 
                 if (_themeApplicationService != null)
@@ -170,7 +170,7 @@ namespace ProceduralMiniGameGenerator.Generators
                     var warnings = _themeApplicationService.ApplyThemeToLevel(level, theme);
                     
                     // Store any warnings in metadata for debugging
-                    if (warnings.Any())
+                    if (warnings != null && warnings.Any())
                     {
                         level.Metadata["ThemeApplicationWarnings"] = warnings;
                         _logger?.LogWarning("Theme application warnings", new {
@@ -528,7 +528,7 @@ namespace ProceduralMiniGameGenerator.Generators
 
             return tileCounts.ToDictionary(
                 kvp => kvp.Key.ToString(),
-                kvp => new { Count = kvp.Value, Percentage = (kvp.Value * 100.0) / totalTiles }
+                kvp => (object)new { Count = kvp.Value, Percentage = (kvp.Value * 100.0) / totalTiles }
             );
         }
         

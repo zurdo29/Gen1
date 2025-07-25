@@ -339,6 +339,8 @@ class PerformanceService {
 // Create singleton instance
 export const performanceService = new PerformanceService();
 
+import React from 'react';
+
 // React hook for performance monitoring
 export const usePerformanceMonitoring = () => {
   const [isMonitoring, setIsMonitoring] = React.useState(false);

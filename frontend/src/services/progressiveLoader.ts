@@ -1,5 +1,5 @@
 // Progressive loading service for large level data
-import { Level, _GenerationConfig } from '../types';
+import { Level, GenerationConfig } from '../types';
 
 interface LoadingChunk {
   id: string;
@@ -305,6 +305,8 @@ class ProgressiveLoader {
     this.loadingQueue = [];
   }
 }
+
+import React from 'react';
 
 // React hook for progressive loading
 export const useProgressiveLoading = (options: ProgressiveLoadingOptions = {}) => {

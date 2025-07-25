@@ -51,5 +51,30 @@ namespace ProceduralMiniGameGenerator.Core
         /// <param name="exception">Exception details</param>
         /// <param name="context">Optional context object</param>
         Task LogErrorAsync(string message, Exception exception, object? context = null);
+
+        /// <summary>
+        /// Logs performance metrics for operations
+        /// </summary>
+        /// <param name="operation">Operation name</param>
+        /// <param name="duration">Operation duration</param>
+        /// <param name="metrics">Optional metrics object</param>
+        Task LogPerformanceAsync(string operation, TimeSpan duration, object? metrics = null);
+
+        /// <summary>
+        /// Logs generation-specific events
+        /// </summary>
+        /// <param name="configId">Configuration ID</param>
+        /// <param name="operation">Generation operation</param>
+        /// <param name="duration">Operation duration</param>
+        /// <param name="metrics">Generation metrics</param>
+        Task LogGenerationAsync(string configId, string operation, TimeSpan duration, object? metrics = null);
+
+        /// <summary>
+        /// Logs error with context preservation (alternative signature)
+        /// </summary>
+        /// <param name="exception">Exception details</param>
+        /// <param name="context">Error context</param>
+        /// <param name="additionalData">Additional data</param>
+        Task LogErrorAsync(Exception exception, string context, object? additionalData = null);
     }
 }

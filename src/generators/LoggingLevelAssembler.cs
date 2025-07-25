@@ -44,7 +44,7 @@ namespace ProceduralMiniGameGenerator.Generators
                 
                 // Log pre-assembly validation
                 var validationResults = ValidateAssemblyInputs(terrain, entities, config);
-                if (validationResults.Any())
+                if (validationResults != null && validationResults.Any())
                 {
                     LogSafely(LogLevel.Warning, 
                         "Level assembly validation warnings", 
@@ -156,7 +156,7 @@ namespace ProceduralMiniGameGenerator.Generators
                         ColorCount = theme.Colors?.Count ?? 0,
                         TileSpriteCount = theme.TileSprites?.Count ?? 0,
                         EntitySpriteCount = theme.EntitySprites?.Count ?? 0,
-                        EffectCount = theme.Effects?.Count ?? 0
+                        PropertiesCount = theme.Properties?.Count ?? 0
                     });
 
                 _baseAssembler.ApplyVisualTheme(level, theme);
@@ -303,7 +303,7 @@ namespace ProceduralMiniGameGenerator.Generators
 
             return tileCounts.ToDictionary(
                 kvp => kvp.Key.ToString(),
-                kvp => new { Count = kvp.Value, Percentage = (kvp.Value * 100.0) / totalTiles }
+                kvp => (object)new { Count = kvp.Value, Percentage = (kvp.Value * 100.0) / totalTiles }
             );
         }
 
@@ -354,7 +354,7 @@ namespace ProceduralMiniGameGenerator.Generators
         /// </summary>
         private double CalculateEntityComplexity(List<Entity> entities)
         {
-            if (!entities.Any()) return 0.0;
+            if (entities == null || !entities.Any()) return 0.0;
             
             var typeCount = entities.GroupBy(e => e.Type).Count();
             var averagePropertiesPerEntity = entities.Average(e => e.Properties?.Count ?? 0);

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { Level, ExportFormat, ExportOptions, _JobStatus } from '../types';
+import { Level, ExportFormat, ExportOptions, JobStatus } from '../types';
 import { apiService } from '../services/api';
 import { useNotifications } from './useNotifications';
 

@@ -1,15 +1,15 @@
 import { 
-  _ajv, 
+  ajv, 
   validateGenerationConfig, 
   validateEntityConfig, 
   validateGameplayConfig, 
   validateVisualThemeConfig,
-  _ENTITY_TYPES,
+  ENTITY_TYPES,
   GENERATION_ALGORITHMS,
   TERRAIN_TYPES,
-  _PLACEMENT_STRATEGIES,
-  _DIFFICULTY_LEVELS,
-  _VICTORY_CONDITIONS
+  PLACEMENT_STRATEGIES,
+  DIFFICULTY_LEVELS,
+  VICTORY_CONDITIONS
 } from '../schemas';
 import { GenerationConfig, ValidationResult, ValidationError, ValidationWarning } from '../types';
 
