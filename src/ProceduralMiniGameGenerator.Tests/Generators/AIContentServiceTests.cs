@@ -1,45 +1,43 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using ProceduralMiniGameGenerator.Models;
 using ProceduralMiniGameGenerator.Models.Entities;
 using ProceduralMiniGameGenerator.Core;
 
 namespace ProceduralMiniGameGenerator.Generators.Tests
 {
-    [TestClass]
     public class AIContentServiceTests
     {
-        private TestLogger _logger;
-        private MockAIContentGenerator _mockAIGenerator;
-        private AIContentService _aiContentService;
+        private readonly TestLogger _logger;
+        private readonly MockAIContentGenerator _mockAIGenerator;
+        private readonly AIContentService _aiContentService;
 
-        [TestInitialize]
-        public void Setup()
+        public AIContentServiceTests()
         {
             _logger = new TestLogger();
             _mockAIGenerator = new MockAIContentGenerator();
             _aiContentService = new AIContentService(_mockAIGenerator, _logger);
         }
 
-        [TestMethod]
+        [Fact]
         public void Constructor_WithNullAIGenerator_ThrowsArgumentNullException()
         {
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() => 
                 new AIContentService(null, _logger));
         }
 
-        [TestMethod]
+        [Fact]
         public void Constructor_WithNullLogger_ThrowsArgumentNullException()
         {
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() => 
                 new AIContentService(_mockAIGenerator, null));
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAvailable_ReturnsAIGeneratorAvailability()
         {
             // Arrange
@@ -49,32 +47,32 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = _aiContentService.IsAvailable();
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.True(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void EnhanceLevel_WithNullLevel_ThrowsArgumentNullException()
         {
             // Arrange
             var theme = CreateTestTheme();
 
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() => 
                 _aiContentService.EnhanceLevel(null, theme));
         }
 
-        [TestMethod]
+        [Fact]
         public void EnhanceLevel_WithNullTheme_ThrowsArgumentNullException()
         {
             // Arrange
             var level = CreateTestLevel();
 
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() => 
                 _aiContentService.EnhanceLevel(level, null));
         }
 
-        [TestMethod]
+        [Fact]
         public void EnhanceLevel_WithAvailableAI_EnhancesEntitiesAndName()
         {
             // Arrange
@@ -86,15 +84,15 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var report = _aiContentService.EnhanceLevel(level, theme);
 
             // Assert
-            Assert.IsTrue(report.Success);
-            Assert.IsTrue(report.IsAIAvailable);
-            Assert.IsTrue(report.LevelNameGenerated);
-            Assert.AreEqual(level.Entities.Count, report.TotalEntities);
-            Assert.IsTrue(report.EnhancedEntities > 0);
-            Assert.IsTrue(report.Duration.TotalMilliseconds >= 0);
+            Assert.True(report.Success);
+            Assert.True(report.IsAIAvailable);
+            Assert.True(report.LevelNameGenerated);
+            Assert.Equal(level.Entities.Count, report.TotalEntities);
+            Assert.True(report.EnhancedEntities > 0);
+            Assert.True(report.Duration.TotalMilliseconds >= 0);
         }
 
-        [TestMethod]
+        [Fact]
         public void EnhanceLevel_WithUnavailableAI_ReturnsReportWithoutEnhancement()
         {
             // Arrange
@@ -106,13 +104,13 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var report = _aiContentService.EnhanceLevel(level, theme);
 
             // Assert
-            Assert.IsTrue(report.Success);
-            Assert.IsFalse(report.IsAIAvailable);
-            Assert.IsFalse(report.LevelNameGenerated);
-            Assert.AreEqual(0, report.EnhancedEntities);
+            Assert.True(report.Success);
+            Assert.False(report.IsAIAvailable);
+            Assert.False(report.LevelNameGenerated);
+            Assert.Equal(0, report.EnhancedEntities);
         }
 
-        [TestMethod]
+        [Fact]
         public void EnhanceEntityDescriptions_WithValidEntities_EnhancesDescriptions()
         {
             // Arrange
@@ -124,16 +122,16 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var enhancedCount = _aiContentService.EnhanceEntityDescriptions(entities, theme);
 
             // Assert
-            Assert.AreEqual(entities.Count, enhancedCount);
+            Assert.Equal(entities.Count, enhancedCount);
             
             foreach (var entity in entities)
             {
-                Assert.IsTrue(entity.HasAIContent());
-                Assert.IsNotNull(entity.GetAIDescription());
+                Assert.True(entity.HasAIContent());
+                Assert.NotNull(entity.GetAIDescription());
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void EnhanceEntityDescriptions_WithUnavailableAI_ReturnsZero()
         {
             // Arrange
@@ -145,15 +143,15 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var enhancedCount = _aiContentService.EnhanceEntityDescriptions(entities, theme);
 
             // Assert
-            Assert.AreEqual(0, enhancedCount);
+            Assert.Equal(0, enhancedCount);
             
             foreach (var entity in entities)
             {
-                Assert.IsFalse(entity.HasAIContent());
+                Assert.False(entity.HasAIContent());
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateEntityDialogue_WithInteractiveEntities_GeneratesDialogue()
         {
             // Arrange
@@ -165,23 +163,23 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var dialogueCount = _aiContentService.GenerateEntityDialogue(entities, theme);
 
             // Assert
-            Assert.IsTrue(dialogueCount > 0);
+            Assert.True(dialogueCount > 0);
             
             var interactiveEntities = entities.Where(e => 
                 e.Type == EntityType.Enemy || 
                 e.Type == EntityType.PowerUp || 
                 e.Type == EntityType.Checkpoint).ToList();
             
-            Assert.AreEqual(interactiveEntities.Count, dialogueCount);
+            Assert.Equal(interactiveEntities.Count, dialogueCount);
             
             foreach (var entity in interactiveEntities)
             {
-                Assert.IsNotNull(entity.GetAIDialogue());
-                Assert.IsTrue(entity.GetDialogueLineCount() > 0);
+                Assert.NotNull(entity.GetAIDialogue());
+                Assert.True(entity.GetDialogueLineCount() > 0);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateEntityDialogue_WithNonInteractiveEntities_GeneratesNoDialogue()
         {
             // Arrange
@@ -193,10 +191,10 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var dialogueCount = _aiContentService.GenerateEntityDialogue(entities, theme);
 
             // Assert
-            Assert.AreEqual(0, dialogueCount);
+            Assert.Equal(0, dialogueCount);
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateLevelName_WithValidInputs_ReturnsGeneratedName()
         {
             // Arrange
@@ -208,11 +206,11 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = _aiContentService.GenerateLevelName(level, theme);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Length > 0);
+            Assert.NotNull(result);
+            Assert.True(result.Length > 0);
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateLevelName_WithUnavailableAI_ReturnsNull()
         {
             // Arrange
@@ -224,10 +222,10 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = _aiContentService.GenerateLevelName(level, theme);
 
             // Assert
-            Assert.IsNull(result);
+            Assert.Null(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void EnhanceLevel_WithAIException_HandlesGracefully()
         {
             // Arrange
@@ -240,12 +238,12 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var report = _aiContentService.EnhanceLevel(level, theme);
 
             // Assert
-            Assert.IsFalse(report.Success);
-            Assert.IsNotNull(report.ErrorMessage);
-            Assert.IsTrue(_logger.HasLogLevel(LogLevel.Error));
+            Assert.False(report.Success);
+            Assert.NotNull(report.ErrorMessage);
+            Assert.True(_logger.HasLogLevel(LogLevel.Error));
         }
 
-        [TestMethod]
+        [Fact]
         public void EnhancementReport_CalculatesCorrectRatios()
         {
             // Arrange
@@ -257,8 +255,8 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var report = _aiContentService.EnhanceLevel(level, theme);
 
             // Assert
-            Assert.IsTrue(report.EnhancementRatio >= 0.0 && report.EnhancementRatio <= 1.0);
-            Assert.AreEqual((double)report.EnhancedEntities / report.TotalEntities, report.EnhancementRatio);
+            Assert.True(report.EnhancementRatio >= 0.0 && report.EnhancementRatio <= 1.0);
+            Assert.Equal((double)report.EnhancedEntities / report.TotalEntities, report.EnhancementRatio);
         }
 
         private Level CreateTestLevel()

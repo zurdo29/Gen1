@@ -4,7 +4,7 @@
   "description": "Comprehensive integration tests for the Web Level Editor",
   "scripts": {
     "test:comprehensive": "scripts/run-comprehensive-tests.bat",
-    "test:backend": "cd backend && dotnet test --filter Category=Integration",
+    "test:backend": "dotnet test src/ProceduralMiniGameGenerator.Tests && dotnet test backend/ProceduralMiniGameGenerator.WebAPI.Tests",
     "test:frontend": "cd frontend && npm run test:integration",
     "test:e2e": "cd test-runner && dotnet test",
     "test:performance": "cd backend && dotnet run --project ProceduralMiniGameGenerator.WebAPI.Tests -- --performance-test",

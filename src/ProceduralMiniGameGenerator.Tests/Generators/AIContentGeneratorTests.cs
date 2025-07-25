@@ -1,21 +1,20 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 using ProceduralMiniGameGenerator.Models;
 using ProceduralMiniGameGenerator.Core;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ProceduralMiniGameGenerator.Generators.Tests
 {
-    [TestClass]
     public class AIContentGeneratorTests
     {
-        private TestLogger _logger;
-        private AIServiceConfig _config;
+        private readonly TestLogger _logger;
+        private readonly AIServiceConfig _config;
 
-        [TestInitialize]
-        public void Setup()
+        public AIContentGeneratorTests()
         {
             _logger = new TestLogger();
             _config = new AIServiceConfig
@@ -29,37 +28,37 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             };
         }
 
-        [TestMethod]
+        [Fact]
         public void Constructor_WithNullHttpClient_ThrowsArgumentNullException()
         {
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() => 
                 new AIContentGenerator(null, _config, _logger));
         }
 
-        [TestMethod]
+        [Fact]
         public void Constructor_WithNullConfig_ThrowsArgumentNullException()
         {
             // Arrange
             var httpClient = new HttpClient();
 
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() => 
                 new AIContentGenerator(httpClient, null, _logger));
         }
 
-        [TestMethod]
+        [Fact]
         public void Constructor_WithNullLogger_ThrowsArgumentNullException()
         {
             // Arrange
             var httpClient = new HttpClient();
 
             // Act & Assert
-            Assert.ThrowsException<ArgumentNullException>(() => 
+            Assert.Throws<ArgumentNullException>(() => 
                 new AIContentGenerator(httpClient, _config, null));
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAvailable_WithDisabledConfig_ReturnsFalse()
         {
             // Arrange
@@ -70,10 +69,10 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = generator.IsAvailable();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsAvailable_WithEnabledConfigAndEndpoint_ReturnsTrue()
         {
             // Arrange
@@ -85,10 +84,10 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = generator.IsAvailable();
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.True(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateItemDescription_WithDisabledAI_ReturnsFallbackDescription()
         {
             // Arrange
@@ -100,12 +99,12 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = generator.GenerateItemDescription(EntityType.Enemy, theme);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Length > 0);
-            Assert.IsTrue(result.Contains("dangerous") || result.Contains("aggressive") || result.Contains("hostile"));
+            Assert.NotNull(result);
+            Assert.True(result.Length > 0);
+            Assert.True(result.Contains("dangerous") || result.Contains("aggressive") || result.Contains("hostile"));
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateNPCDialogue_WithDisabledAI_ReturnsFallbackDialogue()
         {
             // Arrange
@@ -117,12 +116,12 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = generator.GenerateNPCDialogue(EntityType.Enemy, lineCount);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(lineCount, result.Length);
-            Assert.IsTrue(result[0].Length > 0);
+            Assert.NotNull(result);
+            Assert.Equal(lineCount, result.Length);
+            Assert.True(result[0].Length > 0);
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateLevelName_WithDisabledAI_ReturnsFallbackName()
         {
             // Arrange
@@ -135,12 +134,12 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = generator.GenerateLevelName(level, theme);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.IsTrue(result.Length > 0);
-            Assert.IsTrue(result.Contains(theme.Name));
+            Assert.NotNull(result);
+            Assert.True(result.Length > 0);
+            Assert.True(result.Contains(theme.Name));
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateItemDescription_WithDifferentEntityTypes_ReturnsAppropriateDescriptions()
         {
             // Arrange
@@ -153,12 +152,12 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             foreach (var entityType in entityTypes)
             {
                 var result = generator.GenerateItemDescription(entityType, theme);
-                Assert.IsNotNull(result, $"Description should not be null for {entityType}");
-                Assert.IsTrue(result.Length > 0, $"Description should not be empty for {entityType}");
+                Assert.NotNull(result);
+                Assert.True(result.Length > 0);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateNPCDialogue_WithZeroLineCount_ReturnsEmptyArray()
         {
             // Arrange
@@ -169,11 +168,11 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = generator.GenerateNPCDialogue(EntityType.Enemy, 0);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(0, result.Length);
+            Assert.NotNull(result);
+            Assert.Equal(0, result.Length);
         }
 
-        [TestMethod]
+        [Fact]
         public void GenerateNPCDialogue_WithLargeLineCount_ReturnsRequestedCount()
         {
             // Arrange
@@ -185,11 +184,11 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             var result = generator.GenerateNPCDialogue(EntityType.PowerUp, lineCount);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(lineCount, result.Length);
+            Assert.NotNull(result);
+            Assert.Equal(lineCount, result.Length);
         }
 
-        [TestMethod]
+        [Fact]
         public void FallbackContent_IsConsistent_AcrossMultipleCalls()
         {
             // Arrange
@@ -204,8 +203,8 @@ namespace ProceduralMiniGameGenerator.Generators.Tests
             // Assert
             // Fallback content should be deterministic for the same inputs
             // (Note: This test might need adjustment if randomization is added to fallbacks)
-            Assert.IsNotNull(description1);
-            Assert.IsNotNull(description2);
+            Assert.NotNull(description1);
+            Assert.NotNull(description2);
         }
 
         private VisualTheme CreateTestTheme()

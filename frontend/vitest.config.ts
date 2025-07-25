@@ -10,7 +10,8 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'json', 'html', 'lcov', 'text-summary'],
+      reportsDirectory: './coverage',
       exclude: [
         'node_modules/',
         'src/test/',
@@ -32,6 +33,12 @@ export default defineConfig({
       }
     },
     include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', 'cypress']
+    exclude: ['node_modules', 'dist', '.idea', '.git', '.cache', 'cypress'],
+    // CI-specific settings
+    watch: false,
+    reporters: process.env.CI ? ['verbose', 'junit'] : ['default'],
+    outputFile: {
+      junit: './test-results.xml'
+    }
   }
 })

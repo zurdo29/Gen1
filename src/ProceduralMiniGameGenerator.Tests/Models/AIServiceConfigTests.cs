@@ -1,27 +1,26 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Xunit;
 
 namespace ProceduralMiniGameGenerator.Models.Tests
 {
-    [TestClass]
     public class AIServiceConfigTests
     {
-        [TestMethod]
+        [Fact]
         public void DefaultConstructor_SetsDefaultValues()
         {
             // Act
             var config = new AIServiceConfig();
 
             // Assert
-            Assert.IsFalse(config.IsEnabled);
-            Assert.AreEqual(string.Empty, config.ApiEndpoint);
-            Assert.AreEqual(string.Empty, config.ApiKey);
-            Assert.AreEqual(150, config.MaxTokens);
-            Assert.AreEqual(0.7, config.Temperature);
-            Assert.AreEqual(30, config.TimeoutSeconds);
-            Assert.AreEqual(2, config.RetryAttempts);
+            Assert.False(config.IsEnabled);
+            Assert.Equal(string.Empty, config.ApiEndpoint);
+            Assert.Equal(string.Empty, config.ApiKey);
+            Assert.Equal(150, config.MaxTokens);
+            Assert.Equal(0.7, config.Temperature);
+            Assert.Equal(30, config.TimeoutSeconds);
+            Assert.Equal(2, config.RetryAttempts);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithDisabledConfig_ReturnsTrue()
         {
             // Arrange
@@ -34,10 +33,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.True(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithValidEnabledConfig_ReturnsTrue()
         {
             // Arrange
@@ -55,10 +54,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.True(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithEmptyApiEndpoint_ReturnsFalse()
         {
             // Arrange
@@ -76,10 +75,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithNullApiEndpoint_ReturnsFalse()
         {
             // Arrange
@@ -97,10 +96,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithZeroMaxTokens_ReturnsFalse()
         {
             // Arrange
@@ -118,10 +117,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithNegativeMaxTokens_ReturnsFalse()
         {
             // Arrange
@@ -139,10 +138,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithTemperatureBelowZero_ReturnsFalse()
         {
             // Arrange
@@ -160,10 +159,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithTemperatureAboveOne_ReturnsFalse()
         {
             // Arrange
@@ -181,10 +180,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithZeroTimeoutSeconds_ReturnsFalse()
         {
             // Arrange
@@ -202,10 +201,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithNegativeTimeoutSeconds_ReturnsFalse()
         {
             // Arrange
@@ -223,10 +222,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithNegativeRetryAttempts_ReturnsFalse()
         {
             // Arrange
@@ -244,10 +243,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithZeroRetryAttempts_ReturnsTrue()
         {
             // Arrange
@@ -265,10 +264,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsTrue(result);
+            Assert.True(result);
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithBoundaryTemperatureValues_ReturnsTrue()
         {
             // Arrange & Act & Assert
@@ -281,7 +280,7 @@ namespace ProceduralMiniGameGenerator.Models.Tests
                 TimeoutSeconds = 30,
                 RetryAttempts = 0
             };
-            Assert.IsTrue(config1.IsValid());
+            Assert.True(config1.IsValid());
 
             var config2 = new AIServiceConfig
             {
@@ -292,10 +291,10 @@ namespace ProceduralMiniGameGenerator.Models.Tests
                 TimeoutSeconds = 30,
                 RetryAttempts = 0
             };
-            Assert.IsTrue(config2.IsValid());
+            Assert.True(config2.IsValid());
         }
 
-        [TestMethod]
+        [Fact]
         public void IsValid_WithWhitespaceApiEndpoint_ReturnsFalse()
         {
             // Arrange
@@ -313,7 +312,7 @@ namespace ProceduralMiniGameGenerator.Models.Tests
             var result = config.IsValid();
 
             // Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
     }
 }
