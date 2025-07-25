@@ -17,7 +17,8 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "test:e2e": "cypress run",
-    "test:accessibility": "vitest --run --config vitest.accessibility.config.ts"
+    "test:accessibility": "vitest --run --config vitest.accessibility.config.ts",
+    "test:integration": "vitest --run --coverage --reporter=verbose"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -38,6 +39,7 @@
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.1",
+    "@types/lodash": "^4.17.20",
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",

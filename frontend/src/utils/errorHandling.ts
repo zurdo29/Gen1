@@ -224,7 +224,7 @@ export class ErrorHandler {
     return this.handleGenericError(error, fullContext);
   }
 
-  private handleValidationError(error: AxiosError, context: ErrorContext): UserFriendlyError {
+  private handleValidationError(error: AxiosError, _context: ErrorContext): UserFriendlyError {
     const validationDetails = error.response?.data as any;
     
     return {
@@ -243,7 +243,7 @@ export class ErrorHandler {
     };
   }
 
-  private handleAuthenticationError(error: AxiosError, context: ErrorContext): UserFriendlyError {
+  private handleAuthenticationError(_error: AxiosError, _context: ErrorContext): UserFriendlyError {
     return {
       title: 'Authentication Required',
       message: 'Please log in to continue.',
@@ -258,7 +258,7 @@ export class ErrorHandler {
     };
   }
 
-  private handleAuthorizationError(error: AxiosError, context: ErrorContext): UserFriendlyError {
+  private handleAuthorizationError(_error: AxiosError, _context: ErrorContext): UserFriendlyError {
     return {
       title: 'Access Denied',
       message: 'You do not have permission to perform this action.',
@@ -267,7 +267,7 @@ export class ErrorHandler {
     };
   }
 
-  private handleNotFoundError(error: AxiosError, context: ErrorContext): UserFriendlyError {
+  private handleNotFoundError(_error: AxiosError, _context: ErrorContext): UserFriendlyError {
     return {
       title: 'Not Found',
       message: 'The requested resource could not be found.',
@@ -288,7 +288,7 @@ export class ErrorHandler {
     };
   }
 
-  private handleTimeoutError(error: AxiosError, context: ErrorContext): UserFriendlyError {
+  private handleTimeoutError(_error: AxiosError, _context: ErrorContext): UserFriendlyError {
     return {
       title: 'Request Timeout',
       message: 'The operation took too long to complete.',
@@ -305,7 +305,7 @@ export class ErrorHandler {
     };
   }
 
-  private handleRateLimitError(error: AxiosError, context: ErrorContext): UserFriendlyError {
+  private handleRateLimitError(error: AxiosError, _context: ErrorContext): UserFriendlyError {
     const retryAfter = error.response?.headers['retry-after'];
     const waitTime = retryAfter ? `${retryAfter} seconds` : 'a moment';
     
@@ -326,7 +326,7 @@ export class ErrorHandler {
     };
   }
 
-  private handleServerError(error: AxiosError, context: ErrorContext): UserFriendlyError {
+  private handleServerError(_error: AxiosError, _context: ErrorContext): UserFriendlyError {
     return {
       title: 'Server Error',
       message: 'An unexpected error occurred on the server.',
@@ -348,7 +348,7 @@ export class ErrorHandler {
     };
   }
 
-  private handleServiceUnavailableError(error: AxiosError, context: ErrorContext): UserFriendlyError {
+  private handleServiceUnavailableError(_error: AxiosError, _context: ErrorContext): UserFriendlyError {
     return {
       title: 'Service Unavailable',
       message: 'The service is temporarily unavailable.',
@@ -367,7 +367,7 @@ export class ErrorHandler {
     };
   }
 
-  private handleNetworkError(error: AxiosError, context: ErrorContext): UserFriendlyError {
+  private handleNetworkError(_error: AxiosError, _context: ErrorContext): UserFriendlyError {
     return {
       title: 'Network Error',
       message: 'Unable to connect to the server.',

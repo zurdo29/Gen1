@@ -1,0 +1,108 @@
+name: Test CI/CD Pipeline
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+
+jobs:
+  validate-workflow:
+    name: Validate Workflow Syntax
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate workflow files
+        run: |
+          echo "Validating workflow syntax..."
+          
+          # Check if workflow files are valid YAML
+          for file in .github/workflows/*.yml .github/workflows/*.yaml; do
+            if [ -f "$file" ]; then
+              echo "Validating $file"
+              python -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+            fi
+          done
+          
+          echo "✅ All workflow files are valid YAML"
+
+      - name: Check required secrets and variables
+        run: |
+          echo "Checking for required configurations..."
+          
+          # Check if main workflow file exists
+          if [ ! -f ".github/workflows/ci-cd.yml" ]; then
+            echo "❌ Main CI/CD workflow file not found"
+            exit 1
+          fi
+          
+          # Check for required environment variables in workflow
+          if ! grep -q "REGISTRY:" .github/workflows/ci-cd.yml; then
+            echo "❌ REGISTRY environment variable not found"
+            exit 1
+          fi
+          
+          echo "✅ Required configurations found"
+
+      - name: Validate Docker contexts
+        run: |
+          echo "Validating Docker build contexts..."
+          
+          # Check if Dockerfiles exist
+          if [ ! -f "backend/Dockerfile" ]; then
+            echo "❌ Backend Dockerfile not found"
+            exit 1
+          fi
+          
+          if [ ! -f "frontend/Dockerfile" ]; then
+            echo "❌ Frontend Dockerfile not found"
+            exit 1
+          fi
+          
+          echo "✅ Docker contexts are valid"
+
+  test-docker-builds:
+    name: Test Docker Builds (No Push)
+    runs-on: ubuntu-latest
+    needs: validate-workflow
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Test backend Docker build
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: false
+          tags: test-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test frontend Docker build
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          push: false
+          tags: test-frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test image functionality
+        run: |
+          echo "Testing built images..."
+          
+          # Test backend image
+          docker run --rm test-backend:latest dotnet --version
+          
+          # Test frontend image (basic nginx check)
+          docker run --rm -d --name test-frontend test-frontend:latest
+          sleep 5
+          docker exec test-frontend nginx -t
+          docker stop test-frontend
+          
+          echo "✅ Docker images built and tested successfully"

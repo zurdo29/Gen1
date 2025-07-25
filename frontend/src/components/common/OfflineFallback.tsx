@@ -9,12 +9,11 @@ import {
   Card,
   CardContent,
   CardActions,
-  IconButton,
+  _IconButton,
   Snackbar,
   LinearProgress,
   Chip,
-  Stack,
-  Divider
+  Stack
 } from '@mui/material';
 import {
   WifiOff,
@@ -23,7 +22,7 @@ import {
   Warning,
   Info,
   CheckCircle,
-  Error as ErrorIcon,
+  Error as _ErrorIcon,
   Download,
   Cached,
   Storage
@@ -117,7 +116,7 @@ export const OfflineFallback: React.FC<OfflineFallbackProps> = ({
   error,
   onRetry,
   showCachedData = false,
-  cachedDataCount = 0,
+  cachedDataCount: _cachedDataCount = 0,
   children
 }) => {
   const { isOffline } = useOfflineStatus();

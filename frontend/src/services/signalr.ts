@@ -1,21 +1,13 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { Level, ValidationResult } from '../types';
 
-export interface GenerationProgressCallback {
-  (sessionId: string, progress: number, message: string): void;
-}
+export type GenerationProgressCallback = (sessionId: string, progress: number, message: string) => void;
 
-export interface PreviewGeneratedCallback {
-  (sessionId: string, level: Level): void;
-}
+export type PreviewGeneratedCallback = (sessionId: string, level: Level) => void;
 
-export interface GenerationErrorCallback {
-  (sessionId: string, error: string): void;
-}
+export type GenerationErrorCallback = (sessionId: string, error: string) => void;
 
-export interface ValidationResultCallback {
-  (sessionId: string, result: ValidationResult): void;
-}
+export type ValidationResultCallback = (sessionId: string, result: ValidationResult) => void;
 
 export interface SignalRCallbacks {
   onGenerationProgress?: GenerationProgressCallback;

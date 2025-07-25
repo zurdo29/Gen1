@@ -120,7 +120,9 @@ export const VisualConfigPanel: React.FC<VisualConfigPanelProps> = ({
   const [colorDialogOpen, setColorDialogOpen] = useState(false);
   const [colorDialogTitle, setColorDialogTitle] = useState('');
   const [colorDialogInitial, setColorDialogInitial] = useState('');
-  const [colorDialogCallback, setColorDialogCallback] = useState<(color: string) => void>(() => {});
+  const [colorDialogCallback, setColorDialogCallback] = useState<(color: string) => void>(() => {
+    // Default color dialog callback
+  });
 
   const getFieldError = useCallback((fieldName: string) => {
     return validationErrors.find(error => 

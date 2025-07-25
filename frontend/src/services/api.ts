@@ -13,7 +13,7 @@ import {
 
 class ApiService {
   private client: AxiosInstance;
-  private requestId: string = '';
+  private requestId = '';
 
   constructor() {
     this.client = axios.create({
@@ -147,7 +147,7 @@ class ApiService {
   }
 
   // Real-time preview endpoints
-  async requestPreview(sessionId: string, config: GenerationConfig, debounceMs: number = 500): Promise<PreviewRequestResponse> {
+  async requestPreview(sessionId: string, config: GenerationConfig, debounceMs = 500): Promise<PreviewRequestResponse> {
     const response = await this.client.post('/generation/preview', {
       sessionId,
       config,

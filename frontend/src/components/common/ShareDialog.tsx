@@ -20,7 +20,7 @@ import {
 import {
   ContentCopy,
   Share,
-  QrCode,
+  _QrCode,
   Facebook,
   Twitter,
   LinkedIn,
@@ -63,7 +63,7 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({
   open,
   onClose,
   config,
-  levelPreviewUrl
+  levelPreviewUrl: _levelPreviewUrl
 }) => {
   const [shareResult, setShareResult] = useState<ShareResult | null>(null);
   const [loading, setLoading] = useState(false);

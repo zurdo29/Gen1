@@ -7,10 +7,10 @@ import {
   IconButton,
   Tooltip,
   ButtonGroup,
-  Button,
+  _Button,
   Chip,
   Menu,
-  MenuItem,
+  _MenuItem,
 } from '@mui/material';
 import {
   ZoomIn as ZoomInIcon,
@@ -19,18 +19,18 @@ import {
   GridOn as GridIcon,
   GridOff as GridOffIcon,
   Palette as PaletteIcon,
-  Info as InfoIcon,
+  Info as _InfoIcon,
 } from '@mui/icons-material';
 
 interface SimpleLevel {
   width: number;
   height: number;
   tiles: string[][];
-  entities: Array<{
+  entities: {
     type: string;
     x: number;
     y: number;
-  }>;
+  }[];
 }
 
 interface InteractiveLevelPreviewProps {

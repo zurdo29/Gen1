@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { AxiosError } from 'axios';
+import { _AxiosError } from 'axios';
 import { useErrorHandling } from './useErrorHandling';
 import { useNotifications } from './useNotifications';
 

@@ -321,7 +321,7 @@ class LocalStorageService {
   }
 
   private evictOldest(count: number): void {
-    const entries: Array<{ key: string; timestamp: number }> = [];
+    const entries: { key: string; timestamp: number }[] = [];
 
     this.getAllKeys().forEach(key => {
       try {
@@ -354,7 +354,7 @@ class LocalStorageService {
   }
 
   // Batch operations
-  setMany<T>(entries: Array<{ key: string; data: T; ttl?: number }>): boolean {
+  setMany<T>(entries: { key: string; data: T; ttl?: number }[]): boolean {
     try {
       entries.forEach(({ key, data, ttl }) => {
         this.set(key, data, ttl);
@@ -365,7 +365,7 @@ class LocalStorageService {
     }
   }
 
-  getMany<T>(keys: string[]): Array<{ key: string; data: T | null }> {
+  getMany<T>(keys: string[]): { key: string; data: T | null }[] {
     return keys.map(key => ({
       key,
       data: this.get<T>(key)

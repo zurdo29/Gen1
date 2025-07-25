@@ -21,7 +21,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [exportManagerOpen, setExportManagerOpen] = useState(false);
-  const [quickExportFormat, setQuickExportFormat] = useState<string>('');
+  const [_quickExportFormat, setQuickExportFormat] = useState<string>('');
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);

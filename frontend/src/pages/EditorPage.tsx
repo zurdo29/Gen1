@@ -49,11 +49,11 @@ interface SimpleLevel {
   width: number;
   height: number;
   tiles: string[][];
-  entities: Array<{
+  entities: {
     type: string;
     x: number;
     y: number;
-  }>;
+  }[];
 }
 
 interface EditorPageProps {
@@ -111,7 +111,7 @@ export const EditorPage: React.FC<EditorPageProps> = ({
     await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
     
     const tiles: string[][] = [];
-    const entities: Array<{ type: string; x: number; y: number }> = [];
+    const entities: { type: string; x: number; y: number }[] = [];
     
     // Generate tiles based on algorithm
     for (let y = 0; y < config.height; y++) {
@@ -137,13 +137,14 @@ export const EditorPage: React.FC<EditorPageProps> = ({
             if ((x % 2 === 0 || y % 2 === 0) && Math.random() < density) tileType = 'wall';
             else tileType = 'floor';
             break;
-          case 'random':
+          case 'random': {
             const rand = Math.random();
             if (rand < density * 0.6) tileType = 'wall';
             else if (rand < density * 0.8) tileType = 'grass';
             else if (rand < density * 0.9) tileType = 'water';
             else tileType = 'floor';
             break;
+          }
         }
         
         tiles[y][x] = tileType;

@@ -61,11 +61,21 @@ const mockContext = {
   stroke: vi.fn(),
   fillText: vi.fn(),
   canvas: { width: 800, height: 600 },
-  set fillStyle(_value: string) {},
-  set strokeStyle(_value: string) {},
-  set lineWidth(_value: number) {},
-  set font(_value: string) {},
-  set textAlign(_value: string) {}
+  set fillStyle(_value: string) {
+    // Mock fillStyle setter
+  },
+  set strokeStyle(_value: string) {
+    // Mock strokeStyle setter
+  },
+  set lineWidth(_value: number) {
+    // Mock lineWidth setter
+  },
+  set font(_value: string) {
+    // Mock font setter
+  },
+  set textAlign(_value: string) {
+    // Mock textAlign setter
+  }
 } as any;
 
 beforeEach(() => {
@@ -80,7 +90,9 @@ beforeEach(() => {
     bottom: 600,
     x: 0,
     y: 0,
-    toJSON: () => {}
+    toJSON: () => {
+      // Mock toJSON method
+    }
   }));
   
   // Clear all mocks

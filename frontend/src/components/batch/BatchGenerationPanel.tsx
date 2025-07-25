@@ -23,8 +23,7 @@ import {
   Add as AddIcon,
   Remove as RemoveIcon,
   PlayArrow as PlayIcon,
-  Stop as StopIcon,
-  Refresh as RefreshIcon
+  Stop as StopIcon
 } from '@mui/icons-material';
 import { GenerationConfig, ConfigVariation, BatchGenerationRequest } from '../../types';
 

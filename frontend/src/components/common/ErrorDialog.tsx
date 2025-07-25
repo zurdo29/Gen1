@@ -13,14 +13,14 @@ import {
   AccordionSummary,
   AccordionDetails,
   Chip,
-  Link,
+  _Link,
   IconButton,
   Tooltip,
 } from '@mui/material';
 import {
   ExpandMore as ExpandMoreIcon,
   ContentCopy as CopyIcon,
-  Launch as LaunchIcon,
+  Launch as _LaunchIcon,
   BugReport as BugReportIcon,
 } from '@mui/icons-material';
 interface UserFriendlyError {

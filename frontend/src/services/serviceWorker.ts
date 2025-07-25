@@ -7,9 +7,7 @@ interface ServiceWorkerConfig {
   onError?: (error: Error) => void;
 }
 
-interface CacheStats {
-  [cacheName: string]: number;
-}
+type CacheStats = Record<string, number>;
 
 class ServiceWorkerManager {
   private registration: ServiceWorkerRegistration | null = null;
@@ -295,7 +293,7 @@ export const useNetworkQuality = () => {
   const [connectionType, setConnectionType] = React.useState<string>('unknown');
 
   React.useEffect(() => {
-    // @ts-ignore - Connection API is experimental
+    // @ts-expect-error - Connection API is experimental
     const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
 
     if (connection) {

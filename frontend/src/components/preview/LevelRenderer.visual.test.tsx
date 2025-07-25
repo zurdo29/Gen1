@@ -10,8 +10,12 @@ describe('LevelRenderer Visual Tests', () => {
       <LevelRenderer 
         level={mockLevel}
         isLoading={false}
-        onTileClick={() => {}}
-        onEntityDrag={() => {}}
+        onTileClick={() => {
+          // Mock tile click handler
+        }}
+        onEntityDrag={() => {
+          // Mock entity drag handler
+        }}
         showGrid={true}
         zoom={1}
       />
@@ -29,8 +33,12 @@ describe('LevelRenderer Visual Tests', () => {
       <LevelRenderer 
         level={mockLevel}
         isLoading={false}
-        onTileClick={() => {}}
-        onEntityDrag={() => {}}
+        onTileClick={() => {
+          // Mock tile click handler
+        }}
+        onEntityDrag={() => {
+          // Mock entity drag handler
+        }}
         showGrid={true}
         zoom={1}
       />
@@ -43,8 +51,12 @@ describe('LevelRenderer Visual Tests', () => {
       <LevelRenderer 
         level={mockLevel}
         isLoading={false}
-        onTileClick={() => {}}
-        onEntityDrag={() => {}}
+        onTileClick={() => {
+          // Mock tile click handler
+        }}
+        onEntityDrag={() => {
+          // Mock entity drag handler
+        }}
         showGrid={true}
         zoom={2}
       />
@@ -59,8 +71,12 @@ describe('LevelRenderer Visual Tests', () => {
       <LevelRenderer 
         level={mockLevel}
         isLoading={false}
-        onTileClick={() => {}}
-        onEntityDrag={() => {}}
+        onTileClick={() => {
+          // Mock tile click handler
+        }}
+        onEntityDrag={() => {
+          // Mock entity drag handler
+        }}
         showGrid={false}
         zoom={1}
       />
@@ -75,8 +91,12 @@ describe('LevelRenderer Visual Tests', () => {
       <LevelRenderer 
         level={null}
         isLoading={true}
-        onTileClick={() => {}}
-        onEntityDrag={() => {}}
+        onTileClick={() => {
+          // Mock tile click handler
+        }}
+        onEntityDrag={() => {
+          // Mock entity drag handler
+        }}
         showGrid={true}
         zoom={1}
       />
@@ -90,8 +110,12 @@ describe('LevelRenderer Visual Tests', () => {
       <LevelRenderer 
         level={null}
         isLoading={false}
-        onTileClick={() => {}}
-        onEntityDrag={() => {}}
+        onTileClick={() => {
+          // Mock tile click handler
+        }}
+        onEntityDrag={() => {
+          // Mock entity drag handler
+        }}
         showGrid={true}
         zoom={1}
       />

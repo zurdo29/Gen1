@@ -245,7 +245,7 @@ class LevelProgressiveLoader implements ProgressiveLoader<any> {
 
   cancel(): void {
     this.isCancelled = true;
-    this.activeRequests.forEach(request => {
+    this.activeRequests.forEach(_request => {
       // Note: We can't actually cancel fetch requests, but we can ignore their results
     });
     this.activeRequests.clear();
@@ -343,7 +343,7 @@ class BatchProgressiveLoader implements ProgressiveLoader<any> {
 // Semaphore for controlling concurrent requests
 class Semaphore {
   private permits: number;
-  private queue: Array<() => void> = [];
+  private queue: (() => void)[] = [];
 
   constructor(permits: number) {
     this.permits = permits;

@@ -40,12 +40,10 @@ const renderWithTheme = (component: React.ReactElement) => {
 };
 
 describe('OfflineIndicator', () => {
-  const mockUseOfflineStatus = vi.mocked(
-    require('../../services/serviceWorker').useOfflineStatus
-  );
-  const mockUseNetworkQuality = vi.mocked(
-    require('../../services/serviceWorker').useNetworkQuality
-  );
+  const { useOfflineStatus } = await import('../../services/serviceWorker');
+  const { useNetworkQuality } = await import('../../services/serviceWorker');
+  const mockUseOfflineStatus = vi.mocked(useOfflineStatus);
+  const mockUseNetworkQuality = vi.mocked(useNetworkQuality);
 
   beforeEach(() => {
     mockUseOfflineStatus.mockReturnValue({
@@ -123,9 +121,8 @@ describe('OfflineIndicator', () => {
 });
 
 describe('OfflineFallback', () => {
-  const mockUseOfflineStatus = vi.mocked(
-    require('../../services/serviceWorker').useOfflineStatus
-  );
+  const { useOfflineStatus: useOfflineStatusImport } = await import('../../services/serviceWorker');
+  const mockUseOfflineStatus = vi.mocked(useOfflineStatusImport);
 
   beforeEach(() => {
     mockUseOfflineStatus.mockReturnValue({
@@ -292,9 +289,8 @@ describe('NetworkErrorBoundary', () => {
 });
 
 describe('LoadingWithOfflineFallback', () => {
-  const mockUseOfflineStatus = vi.mocked(
-    require('../../services/serviceWorker').useOfflineStatus
-  );
+  const { useOfflineStatus: useOfflineStatusImport2 } = await import('../../services/serviceWorker');
+  const mockUseOfflineStatus = vi.mocked(useOfflineStatusImport2);
 
   beforeEach(() => {
     mockUseOfflineStatus.mockReturnValue({
@@ -406,9 +402,8 @@ describe('LoadingWithOfflineFallback', () => {
 });
 
 describe('OfflineCapableButton', () => {
-  const mockUseOfflineStatus = vi.mocked(
-    require('../../services/serviceWorker').useOfflineStatus
-  );
+  const { useOfflineStatus: useOfflineStatusImport3 } = await import('../../services/serviceWorker');
+  const mockUseOfflineStatus = vi.mocked(useOfflineStatusImport3);
 
   beforeEach(() => {
     mockUseOfflineStatus.mockReturnValue({
@@ -506,7 +501,9 @@ describe('OfflineCapableButton', () => {
   it('should pass through other button props', () => {
     renderWithTheme(
       <OfflineCapableButton 
-        onClick={() => {}} 
+        onClick={() => {
+          // Mock click handler
+        }} 
         variant="outlined"
         color="secondary"
         data-testid="custom-button"

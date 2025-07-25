@@ -1,4 +1,4 @@
-import { validationService, ValidationOptions } from './validation';
+import { validationService, _ValidationOptions } from './validation';
 import { GenerationConfig } from '../types';
 
 describe('ValidationService', () => {
@@ -389,7 +389,7 @@ describe('ValidationService', () => {
         ...validConfig,
         width: 500,
         height: 500,
-        entities: Array(20).fill(null).map((_, i) => ({
+        entities: Array(20).fill(null).map((_, _i) => ({
           type: 'Enemy',
           count: 50,
           minDistance: 1,

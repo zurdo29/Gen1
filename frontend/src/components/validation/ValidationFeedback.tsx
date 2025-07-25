@@ -51,9 +51,9 @@ export const ValidationFeedback: React.FC<ValidationFeedbackProps> = ({
     return null;
   }
 
-  const determinedSeverity = severity || (hasErrors ? 'error' : hasWarnings ? 'warning' : 'info');
+  _determinedSeverity = severity || (hasErrors ? 'error' : hasWarnings ? 'warning' : 'info');
 
-  const getSeverityIcon = (sev: string) => {
+  _getSeverityIcon = (sev: string) => {
     switch (sev) {
       case 'error':
         return <ErrorIcon />;
@@ -66,7 +66,7 @@ export const ValidationFeedback: React.FC<ValidationFeedbackProps> = ({
     }
   };
 
-  const getSeverityColor = (sev: string) => {
+  _getSeverityColor = (sev: string) => {
     switch (sev) {
       case 'error':
         return 'error';
@@ -239,7 +239,7 @@ export interface FieldValidationFeedbackProps {
 }
 
 export const FieldValidationFeedback: React.FC<FieldValidationFeedbackProps> = ({
-  fieldPath,
+  _fieldPath,
   errors = [],
   warnings = [],
   suggestions = [],

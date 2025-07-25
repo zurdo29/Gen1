@@ -1,17 +1,29 @@
-# Build stage
-FROM node:18-alpine AS build
+# Base stage with dependencies
+FROM node:18-alpine AS base
 WORKDIR /app
 
 # Install dependencies for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy package files
+# Copy package files and install all dependencies (including dev for testing)
 COPY package*.json ./
+RUN npm ci --include=dev && npm cache clean --force
 
-# Install dependencies with production optimizations
-RUN npm ci --only=production --no-audit --no-fund
+# Test stage for linting, type checking, and unit tests
+FROM base AS test
+COPY . .
 
-# Copy source code
+# Run linting
+RUN npm run lint
+
+# Run type checking
+RUN npm run type-check
+
+# Run unit tests
+RUN npm run test:ci
+
+# Build stage
+FROM base AS build
 COPY . .
 
 # Build the application with production optimizations

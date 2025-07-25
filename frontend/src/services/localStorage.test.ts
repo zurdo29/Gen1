@@ -363,7 +363,7 @@ describe('LocalStorageService', () => {
       // Create storage service when localStorage is not supported
       const originalLocalStorage = window.localStorage;
       
-      // @ts-ignore
+      // @ts-expect-error
       delete window.localStorage;
       
       const unsupportedStorage = new LocalStorageService();

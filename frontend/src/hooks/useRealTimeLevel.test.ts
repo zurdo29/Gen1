@@ -75,8 +75,12 @@ describe('useRealTimeLevel', () => {
     mockSignalRService.joinSession.mockResolvedValue(undefined);
     mockSignalRService.disconnect.mockResolvedValue(undefined);
     mockSignalRService.isConnected.mockReturnValue(true);
-    mockSignalRService.setCallbacks.mockImplementation(() => {});
-    mockSignalRService.clearCallbacks.mockImplementation(() => {});
+    mockSignalRService.setCallbacks.mockImplementation(() => {
+      // Mock setCallbacks implementation
+    });
+    mockSignalRService.clearCallbacks.mockImplementation(() => {
+      // Mock clearCallbacks implementation
+    });
     
     mockApiService.requestPreview.mockResolvedValue({
       sessionId: defaultOptions.sessionId,

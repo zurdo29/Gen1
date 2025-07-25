@@ -8,7 +8,7 @@ export const useNotifications = () => {
     type: Notification['type'],
     title: string,
     message: string,
-    autoHide: boolean = true
+    autoHide = true
   ) => {
     const notification: Notification = {
       id: Date.now().toString(),

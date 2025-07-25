@@ -83,9 +83,9 @@ class PerformanceService {
     const checkMemory = () => {
       if (!this.isMonitoring) return;
       
-      // @ts-ignore - memory API is experimental
+      // @ts-expect-error - memory API is experimental
       if (performance.memory) {
-        // @ts-ignore
+        // @ts-expect-error
         const memoryInfo = performance.memory;
         this.recordMetric({
           name: 'memory-usage',
@@ -276,7 +276,7 @@ class PerformanceService {
   }
 
   // Get recent metrics
-  getRecentMetrics(count: number = 100): PerformanceMetric[] {
+  getRecentMetrics(count = 100): PerformanceMetric[] {
     return this.metrics.slice(-count);
   }
 

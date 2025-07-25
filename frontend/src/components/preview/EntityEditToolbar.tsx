@@ -34,7 +34,7 @@ interface EntityEditToolbarProps {
   disabled?: boolean;
 }
 
-const ENTITY_OPTIONS: Array<{ type: EntityType; label: string; icon: React.ComponentType; color: string }> = [
+const ENTITY_OPTIONS: { type: EntityType; label: string; icon: React.ComponentType; color: string }[] = [
   { type: 'Player', label: 'Player', icon: Person, color: '#00FF00' },
   { type: 'Enemy', label: 'Enemy', icon: SmartToy, color: '#FF0000' },
   { type: 'Item', label: 'Item', icon: Star, color: '#FFD700' },

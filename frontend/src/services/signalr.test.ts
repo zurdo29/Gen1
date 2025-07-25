@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { _HubConnection, _HubConnectionBuilder } from '@microsoft/signalr';
 import { signalRService } from './signalr';
 import { Level, ValidationResult } from '../types';
 

@@ -1,15 +1,15 @@
 import { 
-  ajv, 
+  _ajv, 
   validateGenerationConfig, 
   validateEntityConfig, 
   validateGameplayConfig, 
   validateVisualThemeConfig,
-  ENTITY_TYPES,
+  _ENTITY_TYPES,
   GENERATION_ALGORITHMS,
   TERRAIN_TYPES,
-  PLACEMENT_STRATEGIES,
-  DIFFICULTY_LEVELS,
-  VICTORY_CONDITIONS
+  _PLACEMENT_STRATEGIES,
+  _DIFFICULTY_LEVELS,
+  _VICTORY_CONDITIONS
 } from '../schemas';
 import { GenerationConfig, ValidationResult, ValidationError, ValidationWarning } from '../types';
 
@@ -102,9 +102,9 @@ export class ValidationService {
     value: any, 
     config: Partial<GenerationConfig> = {}
   ): FieldValidationResult {
-    const errors: ValidationError[] = [];
-    const warnings: ValidationWarning[] = [];
-    const suggestions: string[] = [];
+    const _errors: ValidationError[] = [];
+    const _warnings: ValidationWarning[] = [];
+    const _suggestions: string[] = [];
 
     switch (fieldPath) {
       case 'width':
@@ -561,7 +561,7 @@ export class ValidationService {
     };
   }
 
-  private validateEntities(value: any, config: Partial<GenerationConfig>): FieldValidationResult {
+  private validateEntities(value: any, _config: Partial<GenerationConfig>): FieldValidationResult {
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
     const suggestions: string[] = [];
@@ -663,9 +663,9 @@ export class ValidationService {
     return { isValid: errors.length === 0, errors, warnings };
   }
 
-  private validateNestedField(fieldPath: string, value: any, config: Partial<GenerationConfig>): FieldValidationResult {
+  private validateNestedField(fieldPath: string, _value: any, _config: Partial<GenerationConfig>): FieldValidationResult {
     // Handle nested field validation like 'entities[0].count' or 'gameplay.playerSpeed'
-    const parts = fieldPath.split('.');
+    _parts = fieldPath.split('.');
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
 
@@ -703,7 +703,7 @@ export class ValidationService {
   /**
    * Get validation suggestions for a field
    */
-  getFieldSuggestions(fieldPath: string, currentValue: any): string[] {
+  getFieldSuggestions(fieldPath: string, _currentValue: any): string[] {
     const suggestions: string[] = [];
 
     switch (fieldPath) {

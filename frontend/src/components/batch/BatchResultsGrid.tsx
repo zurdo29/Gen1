@@ -4,9 +4,7 @@ import {
   Card,
   CardContent,
   Typography,
-  Grid,
   IconButton,
-  Tooltip,
   Chip,
   Button,
   Dialog,
@@ -27,9 +25,7 @@ import {
 } from '@mui/material';
 import {
   Visibility as ViewIcon,
-  Download as DownloadIcon,
   Compare as CompareIcon,
-  MoreVert as MoreIcon,
   CheckBox as CheckBoxIcon,
   CheckBoxOutlineBlank as CheckBoxOutlineBlankIcon,
   SelectAll as SelectAllIcon,
@@ -73,9 +69,9 @@ export const BatchResultsGrid: React.FC<BatchResultsGridProps> = ({
   batchRequest,
   error
 }) => {
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [sortBy, setSortBy] = useState<'generated' | 'variation' | 'batch'>('generated');
-  const [filterBy, setFilterBy] = useState<string>('all');
+  const [_viewMode, _setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortBy, _setSortBy] = useState<'generated' | 'variation' | 'batch'>('generated');
+  const [_filterBy, _setFilterBy] = useState<string>('all');
   const [previewDialog, setPreviewDialog] = useState<BatchResult | null>(null);
   const [contextMenu, setContextMenu] = useState<{
     mouseX: number;
@@ -88,8 +84,8 @@ export const BatchResultsGrid: React.FC<BatchResultsGridProps> = ({
     let filtered = results;
 
     // Apply filters
-    if (filterBy !== 'all') {
-      filtered = results.filter(result => {
+    if (_filterBy !== 'all') {
+      filtered = results.filter(_result => {
         // Add filtering logic based on variations, batch index, etc.
         return true; // Placeholder
       });
@@ -108,7 +104,7 @@ export const BatchResultsGrid: React.FC<BatchResultsGridProps> = ({
           return 0;
       }
     });
-  }, [results, filterBy, sortBy]);
+  }, [results, _filterBy, sortBy]);
 
   const handleSelectAll = useCallback(() => {
     if (selectedResults.length === results.length) {
@@ -157,7 +153,7 @@ export const BatchResultsGrid: React.FC<BatchResultsGridProps> = ({
     onCompareResults(selectedResultObjects);
   }, [results, selectedResults, onCompareResults]);
 
-  const handleExport = useCallback(() => {
+  const _handleExport = useCallback(() => {
     const selectedResultObjects = results.filter(r => selectedResults.includes(r.id));
     onExportResults(selectedResultObjects);
   }, [results, selectedResults, onExportResults]);

@@ -248,8 +248,8 @@ describe('ProgressiveLoadingService', () => {
 
   describe('service management', () => {
     it('should manage multiple loaders', () => {
-      const loader1 = service.createLevelLoader('level1', '/api/levels/1');
-      const loader2 = service.createLevelLoader('level2', '/api/levels/2');
+      _loader1 = service.createLevelLoader('level1', '/api/levels/1');
+      _loader2 = service.createLevelLoader('level2', '/api/levels/2');
       
       expect(service.getActiveLoaders()).toContain('level1');
       expect(service.getActiveLoaders()).toContain('level2');

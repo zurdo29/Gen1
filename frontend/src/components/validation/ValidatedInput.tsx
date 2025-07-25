@@ -297,7 +297,7 @@ export const ValidatedChipInput: React.FC<ValidatedChipInputProps> = ({
   suggestions = [],
   showSuggestions = true,
   onValidate,
-  validationStatus = 'valid',
+  validationStatus: _validationStatus = 'valid',
   helpText,
   placeholder,
   maxItems

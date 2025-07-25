@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 import { BatchGenerationPanel } from './BatchGenerationPanel';
-import { GenerationConfig, BatchGenerationRequest } from '../../types';
+import { GenerationConfig } from '../../types';
 
 const mockBaseConfig: GenerationConfig = {
   width: 20,

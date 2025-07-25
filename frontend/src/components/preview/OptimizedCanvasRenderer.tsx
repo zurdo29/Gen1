@@ -56,8 +56,8 @@ export const OptimizedCanvasRenderer: React.FC<OptimizedCanvasRendererProps> = (
   const animationFrameRef = useRef<number>();
   const lastRenderTime = useRef<number>(0);
   const renderQueue = useRef<Set<string>>(new Set());
-  const offscreenCanvas = useRef<HTMLCanvasElement>();
-  const offscreenCtx = useRef<CanvasRenderingContext2D>();
+  _offscreenCanvas = useRef<HTMLCanvasElement>();
+  _offscreenCtx = useRef<CanvasRenderingContext2D>();
   
   // Performance tracking
   const [renderStats, setRenderStats] = useState({

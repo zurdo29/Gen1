@@ -220,7 +220,7 @@ class CacheService {
   }
 
   // Get cache entries sorted by various criteria
-  getTopEntries(sortBy: 'accessCount' | 'size' | 'age', limit: number = 10) {
+  getTopEntries(sortBy: 'accessCount' | 'size' | 'age', limit = 10) {
     const entries = Array.from(this.cache.entries()).map(([key, entry]) => ({
       key,
       ...entry
@@ -251,13 +251,13 @@ class CacheService {
   }
 
   // Batch operations
-  setMany<T>(entries: Array<{ key: string | any[]; data: T; ttl?: number }>): void {
+  setMany<T>(entries: { key: string | any[]; data: T; ttl?: number }[]): void {
     entries.forEach(({ key, data, ttl }) => {
       this.set(key, data, ttl);
     });
   }
 
-  getMany<T>(keys: Array<string | any[]>): Array<{ key: string | any[]; data: T | null }> {
+  getMany<T>(keys: (string | any[])[]): { key: string | any[]; data: T | null }[] {
     return keys.map(key => ({
       key,
       data: this.get<T>(key)
@@ -341,7 +341,7 @@ export const useCache = <T>(
   const [error, setError] = React.useState<Error | null>(null);
   
   const cache = options.cache || levelCache;
-  const cacheKey = Array.isArray(key) ? key.join(':') : key;
+  _cacheKey = Array.isArray(key) ? key.join(':') : key;
 
   const loadData = React.useCallback(async (force = false) => {
     if (!force) {

@@ -19,22 +19,14 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Chip,
-  Grid,
-  Card,
-  CardContent,
-  IconButton,
-  Tooltip
+  Grid
 } from '@mui/material';
 import {
   Download,
   ExpandMore,
   Preview,
   Settings,
-  CheckCircle,
-  Error,
-  Warning,
-  Info
+  Error
 } from '@mui/icons-material';
 import { Level, ExportFormat, ExportOptions, ValidationResult } from '../../types';
 import { apiService } from '../../services/api';

@@ -64,7 +64,7 @@ export function VirtualScrollGrid<T>({
   
   // Get visible items
   const visibleItems = useMemo(() => {
-    const result: Array<{ item: T; index: number; row: number; col: number }> = [];
+    const result: { item: T; index: number; row: number; col: number }[] = [];
     
     for (let i = visibleRange.startIndex; i <= visibleRange.endIndex; i++) {
       if (i >= items.length) break;
@@ -91,7 +91,7 @@ export function VirtualScrollGrid<T>({
   }, [onScroll]);
   
   // Scroll to specific item
-  const scrollToItem = useCallback((index: number, align: 'start' | 'center' | 'end' = 'start') => {
+  const _scrollToItem = useCallback((index: number, align: 'start' | 'center' | 'end' = 'start') => {
     if (!scrollElementRef.current) return;
     
     const row = Math.floor(index / columns);
@@ -120,12 +120,12 @@ export function VirtualScrollGrid<T>({
   }, [columns, rowHeight, containerHeight, itemHeight, totalHeight]);
   
   // Scroll to top
-  const scrollToTop = useCallback(() => {
+  const _scrollToTop = useCallback(() => {
     scrollElementRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
   
   // Scroll to bottom
-  const scrollToBottom = useCallback(() => {
+  const _scrollToBottom = useCallback(() => {
     scrollElementRef.current?.scrollTo({ top: totalHeight, behavior: 'smooth' });
   }, [totalHeight]);
   
@@ -225,7 +225,7 @@ export function VirtualScrollGrid<T>({
 }
 
 // Hook for managing virtual scroll state
-export const useVirtualScroll = <T,>(items: T[], itemsPerPage: number = 50) => {
+export const useVirtualScroll = <T,>(items: T[], itemsPerPage = 50) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   

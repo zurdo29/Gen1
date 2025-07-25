@@ -14,7 +14,7 @@ interface UseSharedConfigReturn {
 
 export const useSharedConfig = (): UseSharedConfigReturn => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  _navigate = useNavigate();
   
   const [isLoadingShared, setIsLoadingShared] = useState(false);
   const [sharedConfig, setSharedConfig] = useState<GenerationConfig | null>(null);

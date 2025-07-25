@@ -4,7 +4,7 @@ import ProgressiveLoader from './progressiveLoader';
 import { Level } from '../types';
 
 // Mock level data for testing
-const createMockLevel = (width: number = 100, height: number = 100): Level => ({
+const createMockLevel = (width = 100, height = 100): Level => ({
   id: 'test-level',
   width,
   height,

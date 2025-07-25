@@ -31,7 +31,7 @@ export class ErrorRecoveryService {
                context.operation?.includes('generation') &&
                context.config;
       },
-      recover: async (error, context) => {
+      recover: async (_error, _context) => {
         const defaultConfig: GenerationConfig = {
           width: 50,
           height: 50,
@@ -94,7 +94,7 @@ export class ErrorRecoveryService {
       name: 'Retry with Exponential Backoff',
       description: 'Retry the operation with increasing delays',
       priority: 3,
-      canRecover: (error, context) => {
+      canRecover: (error, _context) => {
         return error.response?.status >= 500 || 
                error.code === 'NETWORK_ERROR' ||
                error.response?.status === 429;
@@ -131,7 +131,7 @@ export class ErrorRecoveryService {
       name: 'Fallback Export Format',
       description: 'Try alternative export formats',
       priority: 4,
-      canRecover: (error, context) => {
+      canRecover: (error, _context) => {
         return error.response?.data?.code === 'UNSUPPORTED_FORMAT' ||
                error.response?.data?.code === 'EXPORT_SIZE_LIMIT';
       },

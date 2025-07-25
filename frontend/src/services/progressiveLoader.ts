@@ -1,5 +1,5 @@
 // Progressive loading service for large level data
-import { Level, GenerationConfig } from '../types';
+import { Level, _GenerationConfig } from '../types';
 
 interface LoadingChunk {
   id: string;
@@ -28,8 +28,8 @@ interface LevelChunk {
 
 class ProgressiveLoader {
   private loadingQueue: LoadingChunk[] = [];
-  private loadedChunks: Map<string, LoadingChunk> = new Map();
-  private activeLoads: Set<string> = new Set();
+  private loadedChunks = new Map<string, LoadingChunk>();
+  private activeLoads = new Set<string>();
   private options: Required<ProgressiveLoadingOptions>;
 
   constructor(options: ProgressiveLoadingOptions = {}) {
@@ -37,9 +37,15 @@ class ProgressiveLoader {
       chunkSize: 32, // 32x32 tiles per chunk
       maxConcurrentChunks: 4,
       priorityThreshold: 0.5,
-      onProgress: () => {},
-      onChunkLoaded: () => {},
-      onError: () => {},
+      onProgress: () => {
+        // Default progress handler
+      },
+      onChunkLoaded: () => {
+        // Default chunk loaded handler
+      },
+      onError: () => {
+        // Default error handler
+      },
       ...options
     };
   }
@@ -123,7 +129,7 @@ class ProgressiveLoader {
   }
 
   private prioritizeChunks(chunks: LevelChunk[], viewportBounds?: { x: number; y: number; width: number; height: number }): LoadingChunk[] {
-    return chunks.map((chunk, index) => {
+    return chunks.map((chunk, _index) => {
       let priority = 1;
       
       if (viewportBounds) {

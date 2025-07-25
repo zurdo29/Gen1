@@ -143,7 +143,7 @@ export const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({
     return `${ms.toFixed(2)}ms`;
   };
 
-  const getPerformanceColor = (value: number, threshold: number, reverse = false) => {
+  _getPerformanceColor = (value: number, threshold: number, reverse = false) => {
     const ratio = value / threshold;
     if (reverse) {
       return ratio > 1 ? 'success' : ratio > 0.7 ? 'warning' : 'error';

@@ -9,7 +9,7 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import App from '../../App';
 import { LevelPreview } from '../../components/LevelPreview';
 import { ParameterConfiguration } from '../../components/ParameterConfiguration';
-import { ExportManager } from '../../components/ExportManager';
+import { _ExportManager } from '../../components/ExportManager';
 import { BatchGeneration } from '../../components/BatchGeneration';
 
 // Mock API responses
@@ -115,7 +115,7 @@ class MockWebSocket {
   onclose?: (event: CloseEvent) => void;
   onerror?: (event: Event) => void;
 
-  send(data: string) {
+  send(_data: string) {
     // Simulate receiving progress updates
     setTimeout(() => {
       this.onmessage?.({
@@ -171,7 +171,7 @@ describe('Comprehensive Integration Tests - Web Level Editor', () => {
     // Setup fetch mocks
     (global.fetch as any).mockImplementation((url: string, options?: RequestInit) => {
       const method = options?.method || 'GET';
-      const body = options?.body ? JSON.parse(options.body as string) : null;
+      _body = options?.body ? JSON.parse(options.body as string) : null;
 
       // Mock API endpoints
       if (url.includes('/api/generation/generate') && method === 'POST') {
@@ -492,7 +492,7 @@ describe('Comprehensive Integration Tests - Web Level Editor', () => {
     expect(retryButton).toBeInTheDocument();
 
     // Reset fetch mock to success
-    (global.fetch as any).mockImplementation((url: string, options?: RequestInit) => {
+    (global.fetch as any).mockImplementation((url: string, _options?: RequestInit) => {
       if (url.includes('/api/generation/generate')) {
         return Promise.resolve({
           ok: true,

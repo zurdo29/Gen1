@@ -17,18 +17,34 @@ afterAll(() => server.close())
 
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
+  constructor() {
+    // Mock constructor
+  }
+  disconnect() {
+    // Mock disconnect
+  }
+  observe() {
+    // Mock observe
+  }
+  unobserve() {
+    // Mock unobserve
+  }
 }
 
 // Mock ResizeObserver
 global.ResizeObserver = class ResizeObserver {
-  constructor() {}
-  disconnect() {}
-  observe() {}
-  unobserve() {}
+  constructor() {
+    // Mock constructor
+  }
+  disconnect() {
+    // Mock disconnect
+  }
+  observe() {
+    // Mock observe
+  }
+  unobserve() {
+    // Mock unobserve
+  }
 }
 
 // Mock Canvas API for level preview tests

@@ -5,11 +5,11 @@ interface SimpleLevel {
   width: number;
   height: number;
   tiles: string[][];
-  entities: Array<{
+  entities: {
     type: string;
     x: number;
     y: number;
-  }>;
+  }[];
 }
 
 interface SimpleLevelPreviewProps {
