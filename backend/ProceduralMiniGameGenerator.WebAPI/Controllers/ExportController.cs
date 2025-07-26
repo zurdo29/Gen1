@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using ProceduralMiniGameGenerator.WebAPI.Models;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 using ProceduralMiniGameGenerator.WebAPI.Services;
 using System.ComponentModel.DataAnnotations;
+using MvcFileResult = Microsoft.AspNetCore.Mvc.FileResult;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Controllers
 {
@@ -28,8 +29,8 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <returns>List of available export formats with their capabilities</returns>
         /// <response code="200">Returns the list of available export formats</response>
         [HttpGet("formats")]
-        [ProducesResponseType(typeof(List<ExportFormat>), 200)]
-        public async Task<ActionResult<List<ExportFormat>>> GetAvailableFormats()
+        [ProducesResponseType(typeof(List<WebApiModels.ExportFormat>), 200)]
+        public async Task<ActionResult<List<WebApiModels.ExportFormat>>> GetAvailableFormats()
         {
             try
             {
@@ -53,10 +54,10 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <response code="400">Invalid request parameters</response>
         /// <response code="500">Export operation failed</response>
         [HttpPost("level")]
-        [ProducesResponseType(typeof(FileResult), 200)]
+        [ProducesResponseType(typeof(WebApiModels.FileResult), 200)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [ProducesResponseType(typeof(object), 500)]
-        public async Task<IActionResult> ExportLevel([FromBody] ExportRequest request)
+        public async Task<IActionResult> ExportLevel([FromBody] WebApiModels.ExportRequest request)
         {
             try
             {
@@ -128,7 +129,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         [ProducesResponseType(typeof(object), 202)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [ProducesResponseType(typeof(object), 500)]
-        public async Task<IActionResult> ExportBatch([FromBody] BatchExportRequest request)
+        public async Task<IActionResult> ExportBatch([FromBody] WebApiModels.BatchExportRequest request)
         {
             try
             {
@@ -182,10 +183,10 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <response code="404">Job not found</response>
         /// <response code="500">Failed to retrieve job status</response>
         [HttpGet("batch/{jobId}/status")]
-        [ProducesResponseType(typeof(JobStatus), 200)]
+        [ProducesResponseType(typeof(WebApiModels.JobStatus), 200)]
         [ProducesResponseType(typeof(object), 404)]
         [ProducesResponseType(typeof(object), 500)]
-        public async Task<ActionResult<JobStatus>> GetBatchExportStatus([Required] string jobId)
+        public async Task<ActionResult<WebApiModels.JobStatus>> GetBatchExportStatus([Required] string jobId)
         {
             try
             {
@@ -218,7 +219,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <response code="404">Job not found or not completed</response>
         /// <response code="500">Failed to download batch export</response>
         [HttpGet("batch/{jobId}/download")]
-        [ProducesResponseType(typeof(FileResult), 200)]
+        [ProducesResponseType(typeof(WebApiModels.FileResult), 200)]
         [ProducesResponseType(typeof(object), 404)]
         [ProducesResponseType(typeof(object), 500)]
         public async Task<IActionResult> DownloadBatchExport([Required] string jobId)
@@ -274,13 +275,13 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <response code="200">Validation completed</response>
         /// <response code="400">Invalid request parameters</response>
         [HttpPost("validate")]
-        [ProducesResponseType(typeof(ValidationResult), 200)]
+        [ProducesResponseType(typeof(WebApiModels.ValidationResult), 200)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
-        public async Task<ActionResult<ValidationResult>> ValidateExportRequest([FromBody] ExportRequest request)
+        public async Task<ActionResult<WebApiModels.ValidationResult>> ValidateExportRequest([FromBody] WebApiModels.ExportRequest request)
         {
             try
             {
-                var validationResult = new ValidationResult();
+                var validationResult = new WebApiModels.ValidationResult();
 
                 // Basic validation
                 if (request.Level == null)

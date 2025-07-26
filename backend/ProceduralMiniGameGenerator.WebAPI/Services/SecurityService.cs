@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using Ganss.Xss;
 using Microsoft.Extensions.Caching.Memory;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services;
 
@@ -112,10 +113,10 @@ public class SecurityService : ISecurityService
         return true;
     }
     
-    public ValidationResult ValidateConfigurationInput(string configurationJson)
+    public WebApiModels.ValidationResult ValidateConfigurationInput(string configurationJson)
     {
         if (string.IsNullOrEmpty(configurationJson))
-            return new ValidationResult("Configuration cannot be empty");
+            return new WebApiModels.ValidationResult("Configuration cannot be empty");
             
         try
         {
@@ -138,7 +139,7 @@ public class SecurityService : ISecurityService
                 if (Regex.IsMatch(configurationJson, pattern, RegexOptions.IgnoreCase))
                 {
                     _logger.LogWarning("Potentially dangerous pattern detected in configuration: {Pattern}", pattern);
-                    return new ValidationResult($"Configuration contains potentially dangerous content: {pattern}");
+                    return new WebApiModels.ValidationResult($"Configuration contains potentially dangerous content: {pattern}");
                 }
             }
             
@@ -148,26 +149,26 @@ public class SecurityService : ISecurityService
             // Check for excessive nesting (DoS prevention)
             if (GetJsonDepth(document.RootElement) > 10)
             {
-                return new ValidationResult("Configuration JSON has excessive nesting depth");
+                return new WebApiModels.ValidationResult("Configuration JSON has excessive nesting depth");
             }
             
             // Check for excessive size
             if (configurationJson.Length > 100000) // 100KB limit
             {
-                return new ValidationResult("Configuration JSON is too large");
+                return new WebApiModels.ValidationResult("Configuration JSON is too large");
             }
             
-            return ValidationResult.Success!;
+            return WebApiModels.ValidationResult.Success!;
         }
         catch (JsonException ex)
         {
             _logger.LogWarning(ex, "Invalid JSON in configuration input");
-            return new ValidationResult("Invalid JSON format in configuration");
+            return new WebApiModels.ValidationResult("Invalid JSON format in configuration");
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error validating configuration input");
-            return new ValidationResult("Error validating configuration");
+            return new WebApiModels.ValidationResult("Error validating configuration");
         }
     }
     

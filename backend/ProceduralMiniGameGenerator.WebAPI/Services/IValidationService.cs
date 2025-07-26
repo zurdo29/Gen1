@@ -1,4 +1,4 @@
-using ProceduralMiniGameGenerator.WebAPI.Models;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {
@@ -13,7 +13,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <param name="config">Configuration to validate</param>
         /// <param name="options">Validation options</param>
         /// <returns>Validation result with errors and warnings</returns>
-        Task<ValidationResult> ValidateGenerationConfigAsync(object config, ValidationOptions? options = null);
+        Task<WebApiModels.ValidationResult> ValidateGenerationConfigAsync(object config, ValidationOptions? options = null);
         
         /// <summary>
         /// Validates an entity configuration
@@ -21,42 +21,42 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <param name="entity">Entity configuration to validate</param>
         /// <param name="context">Validation context</param>
         /// <returns>Validation result</returns>
-        Task<ValidationResult> ValidateEntityConfigAsync(object entity, ValidationContext? context = null);
+        Task<WebApiModels.ValidationResult> ValidateEntityConfigAsync(object entity, ValidationContext? context = null);
         
         /// <summary>
         /// Validates export request
         /// </summary>
         /// <param name="request">Export request to validate</param>
         /// <returns>Validation result</returns>
-        Task<ValidationResult> ValidateExportRequestAsync(ExportRequest request);
+        Task<WebApiModels.ValidationResult> ValidateExportRequestAsync(WebApiModels.ExportRequest request);
         
         /// <summary>
         /// Validates batch generation request
         /// </summary>
         /// <param name="request">Batch generation request to validate</param>
         /// <returns>Validation result</returns>
-        Task<ValidationResult> ValidateBatchGenerationRequestAsync(BatchGenerationRequest request);
+        Task<WebApiModels.ValidationResult> ValidateBatchGenerationRequestAsync(WebApiModels.BatchGenerationRequest request);
         
         /// <summary>
         /// Performs cross-field validation
         /// </summary>
         /// <param name="config">Configuration to validate</param>
         /// <returns>Cross-field validation result</returns>
-        Task<ValidationResult> ValidateCrossFieldsAsync(object config);
+        Task<WebApiModels.ValidationResult> ValidateCrossFieldsAsync(object config);
         
         /// <summary>
         /// Validates performance constraints
         /// </summary>
         /// <param name="config">Configuration to validate</param>
         /// <returns>Performance validation result</returns>
-        Task<ValidationResult> ValidatePerformanceConstraintsAsync(object config);
+        Task<WebApiModels.ValidationResult> ValidatePerformanceConstraintsAsync(object config);
         
         /// <summary>
         /// Validates business rules
         /// </summary>
         /// <param name="config">Configuration to validate</param>
         /// <returns>Business rule validation result</returns>
-        Task<ValidationResult> ValidateBusinessRulesAsync(object config);
+        Task<WebApiModels.ValidationResult> ValidateBusinessRulesAsync(object config);
     }
     
     /// <summary>

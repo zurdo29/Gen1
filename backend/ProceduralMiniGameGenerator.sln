@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProceduralMiniGameGenerator.WebAPI", "ProceduralMiniGameGenerator.WebAPI\ProceduralMiniGameGenerator.WebAPI.csproj", "{D763651B-30F5-4C19-B324-CD545E994741}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProceduralMiniGameGenerator.WebAPI.Tests", "ProceduralMiniGameGenerator.WebAPI.Tests\ProceduralMiniGameGenerator.WebAPI.Tests.csproj", "{16876FAF-C227-4FBE-BBA5-8364661DA782}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D763651B-30F5-4C19-B324-CD545E994741}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D763651B-30F5-4C19-B324-CD545E994741}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D763651B-30F5-4C19-B324-CD545E994741}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D763651B-30F5-4C19-B324-CD545E994741}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16876FAF-C227-4FBE-BBA5-8364661DA782}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16876FAF-C227-4FBE-BBA5-8364661DA782}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16876FAF-C227-4FBE-BBA5-8364661DA782}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16876FAF-C227-4FBE-BBA5-8364661DA782}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

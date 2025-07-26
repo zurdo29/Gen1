@@ -416,12 +416,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Tests.IntegrationTests
         public Dictionary<string, object> Metadata { get; set; }
     }
 
-    public class ValidationResult
-    {
-        public bool IsValid { get; set; }
-        public List<string> Errors { get; set; } = new();
-        public List<string> Warnings { get; set; } = new();
-    }
+
 
     public class JobStatus
     {

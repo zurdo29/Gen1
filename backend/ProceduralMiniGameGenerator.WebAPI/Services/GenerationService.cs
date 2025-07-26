@@ -1,7 +1,7 @@
 using Hangfire;
 using Microsoft.Extensions.Caching.Memory;
-using ProceduralMiniGameGenerator.Models;
-using ProceduralMiniGameGenerator.WebAPI.Models;
+using CoreModels = ProceduralMiniGameGenerator.Models;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 using ProceduralMiniGameGenerator.Configuration;
 using ProceduralMiniGameGenerator.Generators;
 using System.Diagnostics;
@@ -36,7 +36,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Generates a level synchronously
         /// </summary>
-        public async Task<Level> GenerateLevelAsync(WebGenerationRequest request)
+        public async Task<CoreModels.Level> GenerateLevelAsync(WebApiModels.WebGenerationRequest request)
         {
             var stopwatch = Stopwatch.StartNew();
             var operationId = Guid.NewGuid().ToString();
@@ -115,7 +115,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Validates a generation configuration
         /// </summary>
-        public ValidationResult ValidateConfiguration(GenerationConfig config)
+        public WebApiModels.ValidationResult ValidateConfiguration(CoreModels.GenerationConfig config)
         {
             try
             {
@@ -124,38 +124,42 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 
                 if (isValid)
                 {
-                    return ValidationResult.Success();
+                    return WebApiModels.ValidationResult.Success();
                 }
                 else
                 {
-                    return ValidationResult.Failure(errors);
+                    return WebApiModels.ValidationResult.Failure(errors);
                 }
             }
             catch (Exception ex)
             {
-                return ValidationResult.Failure(new List<string> { $"Validation failed: {ex.Message}" });
+                return WebApiModels.ValidationResult.Failure(new List<string> { $"Validation failed: {ex.Message}" });
             }
         }
 
         /// <summary>
         /// Starts a background generation job
         /// </summary>
-        public string StartBackgroundGeneration(WebGenerationRequest request)
+        public string StartBackgroundGeneration(WebApiModels.WebGenerationRequest request)
         {
             var jobId = Guid.NewGuid().ToString();
             
             // Create initial job status
-            var jobStatus = new JobStatus
+            var jobStatus = new WebApiModels.JobStatus
             {
                 JobId = jobId,
-                Status = "pending",
+                JobType = WebApiModels.JobType.Generation,
+                Status = WebApiModels.JobStatusType.Pending,
                 Progress = 0,
                 CreatedAt = DateTime.UtcNow,
-                Metadata = new Dictionary<string, object>
+                Metadata = new WebApiModels.JobMetadata
                 {
-                    ["sessionId"] = request.SessionId ?? string.Empty,
-                    ["configSize"] = $"{request.Config.Width}x{request.Config.Height}",
-                    ["algorithm"] = request.Config.GenerationAlgorithm
+                    SessionId = request.SessionId ?? string.Empty,
+                    AdditionalData = new Dictionary<string, string>
+                    {
+                        ["configSize"] = $"{request.Config.Width}x{request.Config.Height}",
+                        ["algorithm"] = request.Config.GenerationAlgorithm
+                    }
                 }
             };
             
@@ -171,18 +175,19 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Gets the status of a background job
         /// </summary>
-        public JobStatus GetJobStatus(string jobId)
+        public WebApiModels.JobStatus GetJobStatus(string jobId)
         {
-            if (_cache.TryGetValue($"job:{jobId}", out JobStatus? status) && status != null)
+            if (_cache.TryGetValue($"job:{jobId}", out WebApiModels.JobStatus? status) && status != null)
             {
                 return status;
             }
             
             // Job not found or expired
-            return new JobStatus
+            return new WebApiModels.JobStatus
             {
                 JobId = jobId,
-                Status = "not_found",
+                JobType = WebApiModels.JobType.Generation,
+                Status = WebApiModels.JobStatusType.Failed,
                 Progress = 0,
                 ErrorMessage = "Job not found or has expired"
             };
@@ -192,7 +197,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// Processes a background generation job (called by Hangfire)
         /// </summary>
         [Queue("generation")]
-        public async Task ProcessBackgroundGeneration(string jobId, WebGenerationRequest request)
+        public async Task ProcessBackgroundGeneration(string jobId, WebApiModels.WebGenerationRequest request)
         {
             var stopwatch = Stopwatch.StartNew();
             
@@ -200,7 +205,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             {
                 // Update job status to running
                 var jobStatus = GetJobStatus(jobId);
-                jobStatus.Status = "running";
+                jobStatus.Status = WebApiModels.JobStatusType.Running;
                 jobStatus.Progress = 10;
                 _cache.Set($"job:{jobId}", jobStatus, TimeSpan.FromHours(1));
 
@@ -220,7 +225,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 var validationResult = ValidateConfiguration(request.Config);
                 if (!validationResult.IsValid)
                 {
-                    jobStatus.Status = "failed";
+                    jobStatus.Status = WebApiModels.JobStatusType.Failed;
                     jobStatus.ErrorMessage = $"Invalid configuration: {string.Join(", ", validationResult.Errors)}";
                     jobStatus.CompletedAt = DateTime.UtcNow;
                     _cache.Set($"job:{jobId}", jobStatus, TimeSpan.FromHours(1));
@@ -234,7 +239,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 var level = await Task.Run(() => _generationManager.GenerateLevel(request.Config));
                 
                 // Complete job
-                jobStatus.Status = "completed";
+                jobStatus.Status = WebApiModels.JobStatusType.Completed;
                 jobStatus.Progress = 100;
                 jobStatus.Result = level;
                 jobStatus.CompletedAt = DateTime.UtcNow;
@@ -265,7 +270,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 stopwatch.Stop();
                 
                 var jobStatus = GetJobStatus(jobId);
-                jobStatus.Status = "failed";
+                jobStatus.Status = WebApiModels.JobStatusType.Failed;
                 jobStatus.ErrorMessage = ex.Message;
                 jobStatus.CompletedAt = DateTime.UtcNow;
                 _cache.Set($"job:{jobId}", jobStatus, TimeSpan.FromHours(1));
@@ -283,7 +288,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Starts a batch generation job
         /// </summary>
-        public string StartBatchGeneration(BatchGenerationRequest request)
+        public string StartBatchGeneration(WebApiModels.BatchGenerationRequest request)
         {
             var jobId = Guid.NewGuid().ToString();
             
@@ -291,21 +296,26 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             var totalLevels = CalculateTotalBatchLevels(request);
             
             // Create initial job status
-            var jobStatus = new JobStatus
+            var jobStatus = new WebApiModels.JobStatus
             {
                 JobId = jobId,
-                Status = "pending",
+                JobType = WebApiModels.JobType.BatchGeneration,
+                Status = WebApiModels.JobStatusType.Pending,
                 Progress = 0,
                 CreatedAt = DateTime.UtcNow,
-                Metadata = new Dictionary<string, object>
+                Metadata = new WebApiModels.JobMetadata
                 {
-                    ["sessionId"] = request.SessionId ?? string.Empty,
-                    ["baseConfigSize"] = $"{request.BaseConfig.Width}x{request.BaseConfig.Height}",
-                    ["algorithm"] = request.BaseConfig.GenerationAlgorithm,
-                    ["totalLevels"] = totalLevels,
-                    ["variationCount"] = request.Variations.Count,
-                    ["batchCount"] = request.Count,
-                    ["type"] = "batch"
+                    SessionId = request.SessionId ?? string.Empty,
+                    TotalItems = totalLevels,
+                    AdditionalData = new Dictionary<string, string>
+                    {
+                        ["baseConfigSize"] = $"{request.BaseConfig.Width}x{request.BaseConfig.Height}",
+                        ["algorithm"] = request.BaseConfig.GenerationAlgorithm,
+                        ["totalLevels"] = totalLevels.ToString(),
+                        ["variationCount"] = request.Variations.Count.ToString(),
+                        ["batchCount"] = request.Count.ToString(),
+                        ["type"] = "batch"
+                    }
                 }
             };
             
@@ -325,18 +335,20 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         {
             var jobStatus = GetJobStatus(jobId);
             
-            if (jobStatus.Status == "not_found")
+            if (jobStatus.ErrorMessage == "Job not found or has expired")
             {
                 return false;
             }
             
-            if (jobStatus.Status == "completed" || jobStatus.Status == "failed" || jobStatus.Status == "cancelled")
+            if (jobStatus.Status == WebApiModels.JobStatusType.Completed || 
+                jobStatus.Status == WebApiModels.JobStatusType.Failed || 
+                jobStatus.Status == WebApiModels.JobStatusType.Cancelled)
             {
                 return false; // Cannot cancel completed/failed/already cancelled jobs
             }
             
             // Update job status to cancelled
-            jobStatus.Status = "cancelled";
+            jobStatus.Status = WebApiModels.JobStatusType.Cancelled;
             jobStatus.CompletedAt = DateTime.UtcNow;
             jobStatus.ErrorMessage = "Job was cancelled by user request";
             _cache.Set($"job:{jobId}", jobStatus, TimeSpan.FromHours(1));
@@ -351,7 +363,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// Processes a batch generation job (called by Hangfire)
         /// </summary>
         [Queue("batch-generation")]
-        public async Task ProcessBatchGeneration(string jobId, BatchGenerationRequest request)
+        public async Task ProcessBatchGeneration(string jobId, WebApiModels.BatchGenerationRequest request)
         {
             var stopwatch = Stopwatch.StartNew();
             var results = new List<object>();
@@ -360,7 +372,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             {
                 // Update job status to running
                 var jobStatus = GetJobStatus(jobId);
-                jobStatus.Status = "running";
+                jobStatus.Status = WebApiModels.JobStatusType.Running;
                 jobStatus.Progress = 5;
                 _cache.Set($"job:{jobId}", jobStatus, TimeSpan.FromHours(2));
 
@@ -381,7 +393,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 var validationResult = ValidateConfiguration(request.BaseConfig);
                 if (!validationResult.IsValid)
                 {
-                    jobStatus.Status = "failed";
+                    jobStatus.Status = WebApiModels.JobStatusType.Failed;
                     jobStatus.ErrorMessage = $"Invalid base configuration: {string.Join(", ", validationResult.Errors)}";
                     jobStatus.CompletedAt = DateTime.UtcNow;
                     _cache.Set($"job:{jobId}", jobStatus, TimeSpan.FromHours(2));
@@ -405,7 +417,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 {
                     // Check if job was cancelled
                     var currentStatus = GetJobStatus(jobId);
-                    if (currentStatus.Status == "cancelled")
+                    if (currentStatus.Status == WebApiModels.JobStatusType.Cancelled)
                     {
                         await _loggerService.LogAsync(Microsoft.Extensions.Logging.LogLevel.Information,
                             "Batch generation cancelled",
@@ -466,7 +478,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 }
 
                 // Complete job
-                jobStatus.Status = "completed";
+                jobStatus.Status = WebApiModels.JobStatusType.Completed;
                 jobStatus.Progress = 100;
                 jobStatus.Result = results;
                 jobStatus.CompletedAt = DateTime.UtcNow;
@@ -499,7 +511,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 stopwatch.Stop();
                 
                 var jobStatus = GetJobStatus(jobId);
-                jobStatus.Status = "failed";
+                jobStatus.Status = WebApiModels.JobStatusType.Failed;
                 jobStatus.ErrorMessage = ex.Message;
                 jobStatus.Result = results; // Include partial results
                 jobStatus.CompletedAt = DateTime.UtcNow;
@@ -519,9 +531,9 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Generates all configuration combinations for batch generation
         /// </summary>
-        private List<(GenerationConfig config, int variationIndex, int batchIndex)> GenerateConfigurationCombinations(BatchGenerationRequest request)
+        private List<(CoreModels.GenerationConfig config, int variationIndex, int batchIndex)> GenerateConfigurationCombinations(WebApiModels.BatchGenerationRequest request)
         {
-            var configurations = new List<(GenerationConfig, int, int)>();
+            var configurations = new List<(CoreModels.GenerationConfig, int, int)>();
 
             if (request.Variations == null || request.Variations.Count == 0)
             {
@@ -563,7 +575,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Generates all combinations of variation values
         /// </summary>
-        private List<List<object>> GenerateVariationCombinations(List<ConfigVariation> variations)
+        private List<List<object>> GenerateVariationCombinations(List<WebApiModels.ConfigVariation> variations)
         {
             var combinations = new List<List<object>>();
             
@@ -601,7 +613,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Applies variation values to a configuration
         /// </summary>
-        private void ApplyVariationToConfig(GenerationConfig config, List<ConfigVariation> variations, List<object> values)
+        private void ApplyVariationToConfig(CoreModels.GenerationConfig config, List<WebApiModels.ConfigVariation> variations, List<object> values)
         {
             for (int i = 0; i < variations.Count && i < values.Count; i++)
             {
@@ -646,7 +658,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Creates a deep clone of a GenerationConfig
         /// </summary>
-        private GenerationConfig CloneConfig(GenerationConfig original)
+        private CoreModels.GenerationConfig CloneConfig(CoreModels.GenerationConfig original)
         {
             // Simple cloning - in production you might want to use a proper deep cloning library
             return new GenerationConfig
@@ -705,7 +717,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Calculates the total number of levels in a batch request
         /// </summary>
-        private int CalculateTotalBatchLevels(BatchGenerationRequest request)
+        private int CalculateTotalBatchLevels(WebApiModels.BatchGenerationRequest request)
         {
             if (request.Variations == null || request.Variations.Count == 0)
             {
@@ -721,7 +733,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Generates a cache key for a configuration
         /// </summary>
-        private string GenerateCacheKey(GenerationConfig config)
+        private string GenerateCacheKey(CoreModels.GenerationConfig config)
         {
             var keyData = $"{config.Width}x{config.Height}_{config.GenerationAlgorithm}_{config.Seed}";
             return $"level:{keyData.GetHashCode()}";

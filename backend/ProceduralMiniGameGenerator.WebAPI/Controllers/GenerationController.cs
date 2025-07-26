@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using ProceduralMiniGameGenerator.Models;
-using ProceduralMiniGameGenerator.WebAPI.Models;
+using CoreModels = ProceduralMiniGameGenerator.Models;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 using ProceduralMiniGameGenerator.WebAPI.Services;
 using System.ComponentModel.DataAnnotations;
 
@@ -38,11 +38,11 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <response code="400">Invalid configuration</response>
         /// <response code="500">Generation failed</response>
         [HttpPost("generate")]
-        [ProducesResponseType(typeof(Level), 200)]
+        [ProducesResponseType(typeof(CoreModels.Level), 200)]
         [ProducesResponseType(typeof(BackgroundJobResponse), 202)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> GenerateLevel([FromBody] WebGenerationRequest request)
+        public async Task<IActionResult> GenerateLevel([FromBody] WebApiModels.WebGenerationRequest request)
         {
             try
             {
@@ -130,9 +130,9 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <response code="200">Configuration is valid</response>
         /// <response code="400">Configuration is invalid</response>
         [HttpPost("validate-config")]
-        [ProducesResponseType(typeof(ValidationResult), 200)]
-        [ProducesResponseType(typeof(ValidationResult), 400)]
-        public async Task<IActionResult> ValidateConfiguration([FromBody] GenerationConfig config)
+        [ProducesResponseType(typeof(WebApiModels.ValidationResult), 200)]
+        [ProducesResponseType(typeof(WebApiModels.ValidationResult), 400)]
+        public async Task<IActionResult> ValidateConfiguration([FromBody] CoreModels.GenerationConfig config)
         {
             try
             {
@@ -145,7 +145,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
 
                 if (config == null)
                 {
-                    return BadRequest(ValidationResult.Failure(new List<string> { "Configuration cannot be null" }));
+                    return BadRequest(WebApiModels.ValidationResult.Failure(new List<string> { "Configuration cannot be null" }));
                 }
 
                 var validationResult = _generationService.ValidateConfiguration(config);
@@ -169,7 +169,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
             catch (Exception ex)
             {
                 await _loggerService.LogErrorAsync(ex, "Configuration validation failed", new { Config = config });
-                return StatusCode(500, ValidationResult.Failure(new List<string> { "Internal server error during validation" }));
+                return StatusCode(500, WebApiModels.ValidationResult.Failure(new List<string> { "Internal server error during validation" }));
             }
         }
 
@@ -181,7 +181,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <response code="200">Job status retrieved successfully</response>
         /// <response code="404">Job not found</response>
         [HttpGet("job/{jobId}/status")]
-        [ProducesResponseType(typeof(JobStatus), 200)]
+        [ProducesResponseType(typeof(WebApiModels.JobStatus), 200)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetJobStatus([Required] string jobId)
         {
@@ -364,7 +364,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         [ProducesResponseType(typeof(BackgroundJobResponse), 202)]
         [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> GenerateBatch([FromBody] BatchGenerationRequest request)
+        public async Task<IActionResult> GenerateBatch([FromBody] WebApiModels.BatchGenerationRequest request)
         {
             try
             {
@@ -490,7 +490,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <summary>
         /// Determines if background processing should be used based on configuration
         /// </summary>
-        private static bool ShouldUseBackgroundProcessing(GenerationConfig config)
+        private static bool ShouldUseBackgroundProcessing(CoreModels.GenerationConfig config)
         {
             // Use background processing for large levels or complex configurations
             var totalTiles = config.Width * config.Height;
@@ -504,7 +504,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <summary>
         /// Calculates the total number of levels that will be generated in a batch request
         /// </summary>
-        private static int CalculateTotalBatchLevels(BatchGenerationRequest request)
+        private static int CalculateTotalBatchLevels(WebApiModels.BatchGenerationRequest request)
         {
             if (request.Variations == null || request.Variations.Count == 0)
             {
@@ -521,7 +521,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// <summary>
         /// Validates a batch generation request
         /// </summary>
-        private static ValidationResult ValidateBatchRequest(BatchGenerationRequest request)
+        private static WebApiModels.ValidationResult ValidateBatchRequest(WebApiModels.BatchGenerationRequest request)
         {
             var errors = new List<string>();
 
@@ -576,8 +576,8 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
             }
 
             return errors.Count == 0 
-                ? ValidationResult.Success() 
-                : ValidationResult.Failure(errors);
+                ? WebApiModels.ValidationResult.Success() 
+                : WebApiModels.ValidationResult.Failure(errors);
         }
 
         /// <summary>
@@ -730,7 +730,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
         /// Generation configuration
         /// </summary>
         [Required]
-        public GenerationConfig Config { get; set; } = new();
+        public CoreModels.GenerationConfig Config { get; set; } = new();
 
         /// <summary>
         /// Debounce delay in milliseconds (default: 500ms)

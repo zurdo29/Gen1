@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
-using ProceduralMiniGameGenerator.Models;
-using ProceduralMiniGameGenerator.WebAPI.Models;
+using CoreModels = ProceduralMiniGameGenerator.Models;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 using ProceduralMiniGameGenerator.WebAPI.Services;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Hubs
@@ -72,7 +72,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Hubs
         /// </summary>
         /// <param name="sessionId">Session identifier</param>
         /// <param name="config">Generation configuration</param>
-        public async Task RequestPreview(string sessionId, GenerationConfig config)
+        public async Task RequestPreview(string sessionId, CoreModels.GenerationConfig config)
         {
             await _loggerService.LogAsync(Microsoft.Extensions.Logging.LogLevel.Debug,
                 "Real-time preview requested",
@@ -100,7 +100,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Hubs
         /// <summary>
         /// Send completed level preview
         /// </summary>
-        Task PreviewGenerated(string sessionId, Level level);
+        Task PreviewGenerated(string sessionId, CoreModels.Level level);
 
         /// <summary>
         /// Send generation error
@@ -115,6 +115,6 @@ namespace ProceduralMiniGameGenerator.WebAPI.Hubs
         /// <summary>
         /// Send validation result
         /// </summary>
-        Task ValidationResult(string sessionId, ValidationResult result);
+        Task ValidationResult(string sessionId, WebApiModels.ValidationResult result);
     }
 }

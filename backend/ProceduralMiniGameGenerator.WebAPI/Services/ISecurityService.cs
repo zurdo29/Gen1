@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services;
 
@@ -33,7 +34,7 @@ public interface ISecurityService
     /// </summary>
     /// <param name="configurationJson">JSON configuration string</param>
     /// <returns>Validation result with any errors</returns>
-    ValidationResult ValidateConfigurationInput(string configurationJson);
+    WebApiModels.ValidationResult ValidateConfigurationInput(string configurationJson);
     
     /// <summary>
     /// Checks if an IP address should be rate limited

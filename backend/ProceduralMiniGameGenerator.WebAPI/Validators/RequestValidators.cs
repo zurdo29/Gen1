@@ -1,16 +1,17 @@
 using FluentValidation;
 using Microsoft.Extensions.Options;
 using ProceduralMiniGameGenerator.WebAPI.Configuration;
-using ProceduralMiniGameGenerator.WebAPI.Models;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
+using CoreModels = ProceduralMiniGameGenerator.Models;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Validators
 {
     /// <summary>
     /// Validator for WebGenerationRequest
     /// </summary>
-    public class WebGenerationRequestValidator : AbstractValidator<WebGenerationRequest>
+    public class WebGenerationRequestValidator : AbstractValidator<WebApiModels.WebGenerationRequest>
     {
-        public WebGenerationRequestValidator(IValidator<GenerationConfig> configValidator)
+        public WebGenerationRequestValidator(IValidator<CoreModels.GenerationConfig> configValidator)
         {
             RuleFor(x => x.Config)
                 .NotNull()
@@ -28,10 +29,10 @@ namespace ProceduralMiniGameGenerator.WebAPI.Validators
     /// <summary>
     /// Validator for BatchGenerationRequest
     /// </summary>
-    public class BatchGenerationRequestValidator : AbstractValidator<BatchGenerationRequest>
+    public class BatchGenerationRequestValidator : AbstractValidator<WebApiModels.BatchGenerationRequest>
     {
         public BatchGenerationRequestValidator(
-            IValidator<GenerationConfig> configValidator,
+            IValidator<CoreModels.GenerationConfig> configValidator,
             IOptions<ApiConfiguration> apiConfig,
             IOptions<GenerationConfiguration> genConfig)
         {
@@ -66,7 +67,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Validators
                 .WithMessage($"Total batch size cannot exceed {apiSettings.MaxBatchSize} levels");
         }
 
-        private static int CalculateTotalBatchLevels(BatchGenerationRequest request)
+        private static int CalculateTotalBatchLevels(WebApiModels.BatchGenerationRequest request)
         {
             if (request.Variations == null || request.Variations.Count == 0)
             {
@@ -83,7 +84,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Validators
     /// <summary>
     /// Validator for ConfigVariation
     /// </summary>
-    public class ConfigVariationValidator : AbstractValidator<ConfigVariation>
+    public class ConfigVariationValidator : AbstractValidator<WebApiModels.ConfigVariation>
     {
         private static readonly Dictionary<string, Type> ValidParameters = new()
         {
@@ -118,7 +119,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Validators
                 .WithMessage("Invalid parameter values");
         }
 
-        private static bool ValidateParameterValues(ConfigVariation variation, GenerationConfiguration settings)
+        private static bool ValidateParameterValues(WebApiModels.ConfigVariation variation, GenerationConfiguration settings)
         {
             if (string.IsNullOrEmpty(variation.Parameter) || variation.Values == null)
                 return false;
@@ -187,10 +188,10 @@ namespace ProceduralMiniGameGenerator.WebAPI.Validators
     /// <summary>
     /// Validator for PreviewRequest
     /// </summary>
-    public class PreviewRequestValidator : AbstractValidator<PreviewRequest>
+    public class PreviewRequestValidator : AbstractValidator<WebApiModels.PreviewRequest>
     {
         public PreviewRequestValidator(
-            IValidator<GenerationConfig> configValidator,
+            IValidator<CoreModels.GenerationConfig> configValidator,
             IOptions<ApiConfiguration> apiConfig)
         {
             var settings = apiConfig.Value;

@@ -1,5 +1,5 @@
-using ProceduralMiniGameGenerator.Models;
-using ProceduralMiniGameGenerator.WebAPI.Models;
+using CoreModels = ProceduralMiniGameGenerator.Models;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {
@@ -13,35 +13,35 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// </summary>
         /// <param name="request">Generation request</param>
         /// <returns>Generated level</returns>
-        Task<Level> GenerateLevelAsync(WebGenerationRequest request);
+        Task<CoreModels.Level> GenerateLevelAsync(WebApiModels.WebGenerationRequest request);
         
         /// <summary>
         /// Validates a generation configuration
         /// </summary>
         /// <param name="config">Configuration to validate</param>
         /// <returns>Validation result</returns>
-        ValidationResult ValidateConfiguration(GenerationConfig config);
+        WebApiModels.ValidationResult ValidateConfiguration(CoreModels.GenerationConfig config);
         
         /// <summary>
         /// Starts a background generation job
         /// </summary>
         /// <param name="request">Generation request</param>
         /// <returns>Job ID for tracking</returns>
-        string StartBackgroundGeneration(WebGenerationRequest request);
+        string StartBackgroundGeneration(WebApiModels.WebGenerationRequest request);
         
         /// <summary>
         /// Gets the status of a background job
         /// </summary>
         /// <param name="jobId">Job identifier</param>
         /// <returns>Job status information</returns>
-        JobStatus GetJobStatus(string jobId);
+        WebApiModels.JobStatus GetJobStatus(string jobId);
         
         /// <summary>
         /// Starts a batch generation job
         /// </summary>
         /// <param name="request">Batch generation request</param>
         /// <returns>Job ID for tracking</returns>
-        string StartBatchGeneration(BatchGenerationRequest request);
+        string StartBatchGeneration(WebApiModels.BatchGenerationRequest request);
         
         /// <summary>
         /// Cancels a running batch generation job
