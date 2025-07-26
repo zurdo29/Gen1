@@ -59,7 +59,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Creates a new job status entry
         /// </summary>
-        public async Task<Result> CreateJobStatusAsync(string jobId, string jobType, Dictionary<string, object>? metadata = null)
+        public async Task<Result> CreateJobStatusAsync(string jobId, string jobType, Dictionary<string, object>? metadata = null, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -73,16 +73,24 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                     return Result.Failure("Job type cannot be null or empty");
                 }
 
+                // Parse job type string to enum
+                if (!Enum.TryParse<JobType>(jobType, true, out var parsedJobType))
+                {
+                    parsedJobType = JobType.Generation; // Default fallback
+                }
+
                 var jobStatus = new JobStatus
                 {
                     JobId = jobId,
-                    Status = "pending",
+                    JobType = parsedJobType,
+                    Status = JobStatusType.Pending,
                     Progress = 0,
                     CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
                     Metadata = metadata ?? new Dictionary<string, object>()
                 };
 
-                // Add job type to metadata
+                // Add job type to metadata for backward compatibility
                 jobStatus.Metadata["jobType"] = jobType;
 
                 var cacheKey = GetJobCacheKey(jobId);
@@ -104,7 +112,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Updates job status
         /// </summary>
-        public async Task<Result> UpdateJobStatusAsync(string jobId, string status, int progress, string? message = null)
+        public async Task<Result> UpdateJobStatusAsync(string jobId, string status, int progress, string? message = null, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -123,6 +131,12 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                     return Result.Failure("Progress must be between 0 and 100");
                 }
 
+                // Parse status string to enum
+                if (!Enum.TryParse<JobStatusType>(status, true, out var parsedStatus))
+                {
+                    return Result.Failure($"Invalid status: {status}");
+                }
+
                 var getResult = await GetJobStatusAsync(jobId);
                 if (getResult.IsFailure)
                 {
@@ -130,7 +144,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 }
 
                 var jobStatus = getResult.Value;
-                jobStatus.Status = status;
+                jobStatus.Status = parsedStatus;
                 jobStatus.Progress = progress;
                 jobStatus.UpdatedAt = DateTime.UtcNow;
                 
@@ -171,7 +185,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 }
 
                 var jobStatus = getResult.Value;
-                jobStatus.Status = "completed";
+                jobStatus.Status = JobStatusType.Completed;
                 jobStatus.Progress = 100;
                 jobStatus.CompletedAt = DateTime.UtcNow;
                 jobStatus.UpdatedAt = DateTime.UtcNow;
@@ -213,7 +227,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 }
 
                 var jobStatus = getResult.Value;
-                jobStatus.Status = "failed";
+                jobStatus.Status = JobStatusType.Failed;
                 jobStatus.ErrorMessage = errorMessage;
                 jobStatus.CompletedAt = DateTime.UtcNow;
                 jobStatus.UpdatedAt = DateTime.UtcNow;
@@ -256,12 +270,14 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 var jobStatus = getResult.Value;
                 
                 // Check if job can be cancelled
-                if (jobStatus.Status == "completed" || jobStatus.Status == "failed" || jobStatus.Status == "cancelled")
+                if (jobStatus.Status == JobStatusType.Completed || 
+                    jobStatus.Status == JobStatusType.Failed || 
+                    jobStatus.Status == JobStatusType.Cancelled)
                 {
                     return Result.Failure($"Job cannot be cancelled in status '{jobStatus.Status}'");
                 }
 
-                jobStatus.Status = "cancelled";
+                jobStatus.Status = JobStatusType.Cancelled;
                 jobStatus.ErrorMessage = reason;
                 jobStatus.CompletedAt = DateTime.UtcNow;
                 jobStatus.UpdatedAt = DateTime.UtcNow;

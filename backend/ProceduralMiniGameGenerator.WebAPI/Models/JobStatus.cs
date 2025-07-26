@@ -11,10 +11,11 @@ namespace ProceduralMiniGameGenerator.WebAPI.Models
         public int Progress { get; set; }
         public string? Message { get; set; }
         public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
         public object? Result { get; set; }
         public string? ErrorMessage { get; set; }
-        public JobMetadata? Metadata { get; set; }
+        public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
     }
 
     /// <summary>

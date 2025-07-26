@@ -10,6 +10,53 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
     public class SimpleConfigurationParser : IConfigurationParser
     {
         /// <summary>
+        /// Parses configuration from a dictionary
+        /// </summary>
+        public T ParseConfiguration<T>(Dictionary<string, object> configData) where T : class, new()
+        {
+            if (configData == null)
+                throw new ArgumentNullException(nameof(configData));
+
+            try
+            {
+                var json = System.Text.Json.JsonSerializer.Serialize(configData);
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    AllowTrailingCommas = true,
+                    ReadCommentHandling = JsonCommentHandling.Skip
+                };
+                
+                var result = JsonSerializer.Deserialize<T>(json, options);
+                return result ?? new T();
+            }
+            catch (JsonException ex)
+            {
+                throw new ArgumentException($"Failed to parse configuration: {ex.Message}", ex);
+            }
+        }
+
+        /// <summary>
+        /// Validates configuration data
+        /// </summary>
+        public bool ValidateConfiguration(Dictionary<string, object> configData)
+        {
+            if (configData == null)
+                return false;
+
+            try
+            {
+                // Try to parse as GenerationConfig to validate structure
+                var config = ParseConfiguration<GenerationConfig>(configData);
+                return ValidateConfig(config, out _);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Parses a JSON configuration file
         /// </summary>
         public GenerationConfig ParseConfig(string jsonPath)

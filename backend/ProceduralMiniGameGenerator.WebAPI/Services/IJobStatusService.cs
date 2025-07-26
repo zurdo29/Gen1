@@ -22,7 +22,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <param name="metadata">Additional job metadata</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Result indicating success or failure</returns>
-        Task<Result> CreateJobStatusAsync(string jobId, JobType jobType, JobMetadata? metadata = null, CancellationToken cancellationToken = default);
+        Task<Result> CreateJobStatusAsync(string jobId, string jobType, Dictionary<string, object>? metadata = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Updates job status
@@ -33,7 +33,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <param name="message">Optional status message</param>
         /// <param name="cancellationToken">Cancellation token</param>
         /// <returns>Result indicating success or failure</returns>
-        Task<Result> UpdateJobStatusAsync(string jobId, JobStatusType status, int progress, string? message = null, CancellationToken cancellationToken = default);
+        Task<Result> UpdateJobStatusAsync(string jobId, string status, int progress, string? message = null, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Completes a job with success

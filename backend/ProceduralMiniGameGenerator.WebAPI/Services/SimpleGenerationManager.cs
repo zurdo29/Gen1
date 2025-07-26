@@ -183,6 +183,52 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             
             return tileMap;
         }
+
+        public bool SupportsParameters(Dictionary<string, object> parameters)
+        {
+            return parameters != null && 
+                   parameters.ContainsKey("scale") && 
+                   parameters.ContainsKey("octaves");
+        }
+
+        public string GetAlgorithmName()
+        {
+            return "Perlin Noise";
+        }
+
+        public Dictionary<string, object> GetDefaultParameters()
+        {
+            return new Dictionary<string, object>
+            {
+                ["scale"] = 0.1,
+                ["octaves"] = 4,
+                ["persistence"] = 0.5,
+                ["lacunarity"] = 2.0
+            };
+        }
+
+        public List<string> ValidateParameters(Dictionary<string, object> parameters)
+        {
+            var errors = new List<string>();
+            
+            if (parameters == null)
+            {
+                errors.Add("Parameters cannot be null");
+                return errors;
+            }
+
+            if (!parameters.ContainsKey("scale"))
+                errors.Add("Missing required parameter: scale");
+            else if (parameters["scale"] is not double scale || scale <= 0)
+                errors.Add("Scale must be a positive number");
+
+            if (!parameters.ContainsKey("octaves"))
+                errors.Add("Missing required parameter: octaves");
+            else if (parameters["octaves"] is not int octaves || octaves < 1 || octaves > 10)
+                errors.Add("Octaves must be between 1 and 10");
+
+            return errors;
+        }
     }
 
     /// <summary>
@@ -222,6 +268,51 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             }
             
             return tileMap;
+        }
+
+        public bool SupportsParameters(Dictionary<string, object> parameters)
+        {
+            return parameters != null && 
+                   parameters.ContainsKey("iterations") && 
+                   parameters.ContainsKey("wallThreshold");
+        }
+
+        public string GetAlgorithmName()
+        {
+            return "Cellular Automata";
+        }
+
+        public Dictionary<string, object> GetDefaultParameters()
+        {
+            return new Dictionary<string, object>
+            {
+                ["iterations"] = 5,
+                ["wallThreshold"] = 4,
+                ["initialWallProbability"] = 0.45
+            };
+        }
+
+        public List<string> ValidateParameters(Dictionary<string, object> parameters)
+        {
+            var errors = new List<string>();
+            
+            if (parameters == null)
+            {
+                errors.Add("Parameters cannot be null");
+                return errors;
+            }
+
+            if (!parameters.ContainsKey("iterations"))
+                errors.Add("Missing required parameter: iterations");
+            else if (parameters["iterations"] is not int iterations || iterations < 1 || iterations > 20)
+                errors.Add("Iterations must be between 1 and 20");
+
+            if (!parameters.ContainsKey("wallThreshold"))
+                errors.Add("Missing required parameter: wallThreshold");
+            else if (parameters["wallThreshold"] is not int threshold || threshold < 0 || threshold > 8)
+                errors.Add("Wall threshold must be between 0 and 8");
+
+            return errors;
         }
         
         private int CountNeighborWalls(TileMap tileMap, int x, int y)
@@ -286,6 +377,51 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             
             return tileMap;
         }
+
+        public bool SupportsParameters(Dictionary<string, object> parameters)
+        {
+            return parameters != null && 
+                   parameters.ContainsKey("pathWidth") && 
+                   parameters.ContainsKey("connectionProbability");
+        }
+
+        public string GetAlgorithmName()
+        {
+            return "Simple Maze";
+        }
+
+        public Dictionary<string, object> GetDefaultParameters()
+        {
+            return new Dictionary<string, object>
+            {
+                ["pathWidth"] = 1,
+                ["connectionProbability"] = 0.5,
+                ["ensureConnectivity"] = true
+            };
+        }
+
+        public List<string> ValidateParameters(Dictionary<string, object> parameters)
+        {
+            var errors = new List<string>();
+            
+            if (parameters == null)
+            {
+                errors.Add("Parameters cannot be null");
+                return errors;
+            }
+
+            if (!parameters.ContainsKey("pathWidth"))
+                errors.Add("Missing required parameter: pathWidth");
+            else if (parameters["pathWidth"] is not int width || width < 1 || width > 5)
+                errors.Add("Path width must be between 1 and 5");
+
+            if (!parameters.ContainsKey("connectionProbability"))
+                errors.Add("Missing required parameter: connectionProbability");
+            else if (parameters["connectionProbability"] is not double prob || prob < 0 || prob > 1)
+                errors.Add("Connection probability must be between 0 and 1");
+
+            return errors;
+        }
     }
 
     /// <summary>
@@ -328,6 +464,52 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             }
             
             return tileMap;
+        }
+
+        public bool SupportsParameters(Dictionary<string, object> parameters)
+        {
+            return parameters != null && 
+                   parameters.ContainsKey("roomCount") && 
+                   parameters.ContainsKey("minRoomSize");
+        }
+
+        public string GetAlgorithmName()
+        {
+            return "Room Generator";
+        }
+
+        public Dictionary<string, object> GetDefaultParameters()
+        {
+            return new Dictionary<string, object>
+            {
+                ["roomCount"] = 6,
+                ["minRoomSize"] = 5,
+                ["maxRoomSize"] = 15,
+                ["connectRooms"] = true
+            };
+        }
+
+        public List<string> ValidateParameters(Dictionary<string, object> parameters)
+        {
+            var errors = new List<string>();
+            
+            if (parameters == null)
+            {
+                errors.Add("Parameters cannot be null");
+                return errors;
+            }
+
+            if (!parameters.ContainsKey("roomCount"))
+                errors.Add("Missing required parameter: roomCount");
+            else if (parameters["roomCount"] is not int count || count < 1 || count > 20)
+                errors.Add("Room count must be between 1 and 20");
+
+            if (!parameters.ContainsKey("minRoomSize"))
+                errors.Add("Missing required parameter: minRoomSize");
+            else if (parameters["minRoomSize"] is not int size || size < 3 || size > 50)
+                errors.Add("Minimum room size must be between 3 and 50");
+
+            return errors;
         }
     }
 
@@ -373,6 +555,41 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             }
             
             return entities;
+        }
+
+        public bool IsValidPosition(System.Numerics.Vector2 position, TileMap terrain, List<Entity> existingEntities)
+        {
+            int x = (int)position.X;
+            int y = (int)position.Y;
+            
+            // Check bounds
+            if (x < 0 || x >= terrain.Width || y < 0 || y >= terrain.Height)
+                return false;
+            
+            // Check if tile is walkable
+            var tileType = terrain.GetTile(x, y);
+            if (tileType == TileType.Wall || tileType == TileType.Water)
+                return false;
+            
+            // Check for existing entities at this position
+            foreach (var entity in existingEntities)
+            {
+                if (entity.Position.X == x && entity.Position.Y == y)
+                    return false;
+            }
+            
+            return true;
+        }
+
+        public string GetStrategyName()
+        {
+            return "Simple Entity Placer";
+        }
+
+        public bool SupportsParameters(Dictionary<string, object> parameters)
+        {
+            // Simple placer doesn't require specific parameters
+            return true;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Hubs
     /// <summary>
     /// SignalR hub for real-time generation updates
     /// </summary>
-    public class GenerationHub : Hub
+    public class GenerationHub : Hub<IGenerationHubClient>
     {
         private readonly ILoggerService _loggerService;
 
