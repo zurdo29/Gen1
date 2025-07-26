@@ -1,5 +1,6 @@
 using ProceduralMiniGameGenerator.Models;
 using System.Text.Json;
+using GenerationConfig = ProceduralMiniGameGenerator.Models.GenerationConfig;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {

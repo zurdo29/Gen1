@@ -2,6 +2,7 @@ using Microsoft.Extensions.Caching.Memory;
 using ProceduralMiniGameGenerator.Models;
 using ProceduralMiniGameGenerator.WebAPI.Models;
 using System.Text.Json;
+using GenerationConfig = ProceduralMiniGameGenerator.Models.GenerationConfig;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {
