@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "name": "Structure & Technology Guardian",
+  "description": "Monitors changes to project files and reminds about correct backend/frontend structure and technology stack to prevent mismatches",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "backend/**/*",
+      "frontend/**/*",
+      "src/**/*",
+      "docker-compose*.yml",
+      "package.json",
+      "*.csproj",
+      "tsconfig.json",
+      "vite.config.ts"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Files in the project structure have been modified. Please review the changes and ensure they follow the correct project organization:\n\nBACKEND (backend/): \n- ASP.NET Core 8 with C#\n- Controllers, Services, Models structure\n- Use dependency injection and interface patterns\n- xUnit for testing\n\nFRONTEND (frontend/):\n- React 18 with TypeScript and Vite\n- Material-UI components\n- React Query for API state\n- Vitest/Cypress for testing\n\nCORE ENGINE (src/):\n- C# library with interface-driven design\n- Generators, models, validators structure\n\nVerify that:\n1. Backend files use proper ASP.NET Core patterns and C# conventions\n2. Frontend files follow React/TypeScript best practices\n3. Dependencies match the defined technology stack\n4. File placement follows the documented structure\n5. No technology mismatches (e.g., wrong frameworks in wrong directories)\n\nIf any issues are found, provide specific guidance on correct structure and technology usage."
+  }
+}
