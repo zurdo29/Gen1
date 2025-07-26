@@ -49,6 +49,8 @@ namespace ProceduralMiniGameGenerator.WebAPI.Models
         Running,
         Completed,
         Failed,
-        Cancelled
+        Cancelled,
+
+        NotFound
     }
 }
