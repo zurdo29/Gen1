@@ -9,6 +9,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Globalization;
 using ILevelExportService = ProceduralMiniGameGenerator.Interfaces.ILevelExportService;
+using TileType = ProceduralMiniGameGenerator.Models.TileType;
 
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
@@ -597,7 +598,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
 
         private int[,] SerializeTerrain(TileMap? terrain)
         {
-            if (terrain == null) return new int[0, 0];
+            if (terrain is null) return new int[0, 0];
 
             var serialized = new int[terrain.Width, terrain.Height];
             for (int x = 0; x < terrain.Width; x++)
@@ -970,7 +971,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
 
         private object CreateWebOptimizedTerrain(TileMap? terrain, bool compactFormat)
         {
-            if (terrain == null) return new { tiles = new object[0] };
+            if (terrain is null) return new { tiles = new object[0] };
 
             if (compactFormat)
             {
@@ -1071,7 +1072,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         {
             var distribution = new Dictionary<string, int>();
 
-            if (terrain == null) return distribution;
+            if (terrain is null) return distribution;
 
             for (int x = 0; x < terrain.Width; x++)
             {

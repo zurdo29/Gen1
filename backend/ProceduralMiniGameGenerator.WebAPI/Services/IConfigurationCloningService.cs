@@ -1,4 +1,5 @@
 using ProceduralMiniGameGenerator.Models;
+using GenerationConfig = ProceduralMiniGameGenerator.Models.GenerationConfig;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {
@@ -39,8 +40,8 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
 
         private VisualThemeConfig? CloneVisualTheme(VisualThemeConfig? original)
         {
-            if (original == null) return null;
-            
+            if (original is null) return null;
+
             return new VisualThemeConfig
             {
                 ThemeName = original.ThemeName
@@ -50,7 +51,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
 
         private GameplayConfig? CloneGameplay(GameplayConfig? original)
         {
-            if (original == null) return null;
+            if (original is null) return null;
             
             return new GameplayConfig
             {

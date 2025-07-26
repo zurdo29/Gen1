@@ -211,7 +211,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 {
                     // Check if job was cancelled
                     var statusResult = await _jobStatusService.GetJobStatusAsync(jobId);
-                    if (statusResult.IsSuccess && statusResult.Value.Status == JobStatusType.Cancelled)
+                    if (statusResult.IsSuccess && statusResult.Value.Status == WebApiModels.JobStatusType.Cancelled)
                     {
                         _logger.LogInformation("Batch generation job {JobId} was cancelled", jobId);
                         return;

@@ -15,19 +15,22 @@
     "build:frontend": "cd frontend && npm run build",
     "setup:test-env": "npm run build:all && npm run start:backend && npm run start:frontend"
   },
- "devDependencies": {
-  "@testing-library/react": "^13.4.0",
-  "@testing-library/jest-dom": "^5.16.5",
-  "@testing-library/user-event": "^14.4.3",
-  "@tanstack/react-query": "^4.29.0",
-  "vitest": "^0.34.0",
-  "selenium-webdriver": "^4.10.0",
-  "chromedriver": "^114.0.0",
-  "eslint": "^latest",
-  "@typescript-eslint/eslint-plugin": "^latest",
-  "@typescript-eslint/parser": "^latest",
-  "eslint-config-standard-with-typescript": "^latest"
-},
+  "devDependencies": {
+    "@tanstack/react-query": "^4.29.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@types/react-router-dom": "^5.3.3",
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "chromedriver": "^114.0.0",
+    "eslint": "latest",
+    "eslint-config-standard-with-typescript": "latest",
+    "selenium-webdriver": "^4.10.0",
+    "vitest": "^0.34.0"
+  },
   "keywords": [
     "integration-testing",
     "web-level-editor",
@@ -38,5 +41,11 @@
     "comprehensive-testing"
   ],
   "author": "Web Level Editor Team",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.2.0",
+    "react-router-dom": "^7.7.1"
+  }
 }
