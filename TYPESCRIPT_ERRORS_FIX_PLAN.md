@@ -1,425 +1,296 @@
-# TypeScript & Build Errors Fix Plan
+# TypeScript Errors Fix Plan
 
-## 🚨 Current Status - UPDATED
-- **Frontend**: 402 ESLint problems (170 errors, 232 warnings) - Analyzed ✅
-- **Backend**: 310 compilation errors - Test files in wrong location ✅
-- **CI/CD**: Updated to continue with warnings for now ✅
+**⚠️ CRITICAL UPDATE**: This document has been updated to reflect the actual current state of the project.
 
-## 🔍 Root Cause Analysis
+**Last Updated**: January 25, 2025  
+**Current Error Count**: 165+ Frontend Errors, 59+ Backend Errors  
+**Project Status**: NON-FUNCTIONAL
 
-### Backend Issues (CRITICAL)
-- **Problem**: Test files are located in `src/` directory instead of test projects
-- **Impact**: Core library project tries to compile test code without test framework references
-- **Files affected**: MSTest and xUnit test files mixed in production code
-- **Solution**: Move test files to appropriate test projects
+## Current Reality Assessment
 
-### Frontend Issues (HIGH PRIORITY)  
-- **ESLint Configuration**: Updated to modern typescript-eslint setup ✅
-- **Type Issues**: 232 warnings mostly `any` types and unused variables
-- **Code Quality**: 170 errors including unused imports, empty functions, array types
+The original plan was based on outdated information. The actual situation is significantly worse:
 
-## 🎯 Priority Fix Order - REVISED
+- **Frontend**: 165+ TypeScript compilation errors (not 223 as originally documented)
+- **Backend**: 59+ C# compilation errors (not 2 as originally documented)
+- **Build Status**: Complete failure on both frontend and backend
+- **Test Status**: Cannot run any tests due to compilation failures
 
-### Phase 1: Critical Infrastructure (IMMEDIATE) 
-1. **Backend Test File Organization** 🚨
-   - Move test files from `src/` to test projects
-   - Remove test framework references from main library
-   - Ensure proper project structure
+## Revised Error Categories and Priority
 
-2. **Frontend ESLint Configuration** ✅
-   - Updated to modern typescript-eslint with stylistic rules
-   - Added projectService for better type checking
-   - Fixed tsconfig.json include patterns
+### 🔴 CRITICAL - PROJECT CANNOT BUILD (100+ errors)
 
-### Phase 2: Code Quality Cleanup (HIGH PRIORITY)
-3. **Remove Unused Code**
-   - Fix 170 ESLint errors (unused imports, variables)
-   - Remove empty functions and dead code
-   - Clean up test utilities
-
-4. **Type Safety Improvements**
-   - Replace 232 `any` types with proper types
-   - Fix array type declarations (use T[] instead of Array<T>)
-   - Add proper type annotations
-
-### Phase 3: React & Hook Optimization (MEDIUM PRIORITY)
-5. **React Hook Dependencies**
-   - Fix useEffect dependency arrays
-   - Resolve hook warnings
-   - Optimize re-renders
-
-6. **Component Optimization**
-   - Fix react-refresh warnings
-   - Optimize component exports
-   - Clean up prop types
-
-### Phase 4: Advanced Features (LOW PRIORITY)
-7. **Performance & Accessibility**
-   - Fix accessibility issues
-   - Optimize performance bottlenecks
-   - Clean up test configurations
-
-## 🔧 Specific Fixes Implemented
-
-### Backend Fixes ✅
-- **Issue Identified**: Test files in wrong location
-- **Solution Applied**: Moved test files from `src/` to appropriate test projects
-- **Result**: Reduced backend errors from 310 to 105 (66% improvement)
-- **Best Practices Applied**:
-  - xUnit test organization with proper `[Fact]` and `[Theory]` attributes
-  - Mock setup using `Mock<T>` for dependency injection
-  - Integration tests with `WebApplicationFactory<Program>`
-
-### Frontend Fixes ✅
-- **ESLint Configuration**: Updated to modern typescript-eslint setup
-- **TypeScript Configuration**: Fixed include patterns
-- **Next Steps**: Systematic cleanup based on Context7 best practices
-
-## 🎯 Detailed Implementation Guide
-
-### Phase 2: Frontend Code Quality Cleanup (CURRENT FOCUS)
-
-#### A. Remove Unused Imports and Variables (170 errors)
-Based on Context7 TypeScript ESLint documentation:
-
-```json
-{
-  "rules": {
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      {
-        "args": "all",
-        "argsIgnorePattern": "^_",
-        "caughtErrors": "all", 
-        "caughtErrorsIgnorePattern": "^_",
-        "destructuredArrayIgnorePattern": "^_",
-        "varsIgnorePattern": "^_",
-        "ignoreRestSiblings": true
-      }
-    ]
-  }
-}
-```
-
-**Common Patterns to Fix**:
-- Remove unused imports: `import { UnusedComponent } from './components'`
-- Remove unused variables: `const unusedVar = someValue`
-- Remove unused function parameters (prefix with `_` if needed for interface compliance)
-
-#### B. Replace `any` Types with Proper Types (232 warnings)
-Context7 TypeScript best practices:
-
+#### Frontend Core Type System Collapse (40+ errors)
 ```typescript
-// ❌ Avoid
-const data: any = fetchData();
-
-// ✅ Preferred
-interface ApiResponse {
-  id: number;
-  name: string;
-  status: 'active' | 'inactive';
-}
-const data: ApiResponse = fetchData();
-
-// ✅ For gradual migration
-const data: unknown = fetchData();
-// Then narrow with type guards
+// Major type definition failures:
+- Level interface missing: tiles, spawnPoints properties
+- Entity interface broken: position, properties structure mismatch
+- GenerationConfig type: completely missing or incompatible
+- TileMap interface: incompatible with array usage patterns
+- ValidationResult: ambiguous references across multiple namespaces
 ```
 
-#### C. Fix React Hook Dependencies
-Based on Context7 React documentation:
-
-```typescript
-// ❌ Missing dependencies
-useEffect(() => {
-  const connection = createConnection(serverUrl, roomId);
-  connection.connect();
-  return () => connection.disconnect();
-}, []); // Missing serverUrl, roomId
-
-// ✅ Correct dependencies
-useEffect(() => {
-  const connection = createConnection(serverUrl, roomId);
-  connection.connect();
-  return () => connection.disconnect();
-}, [serverUrl, roomId]); // All dependencies declared
-
-// ✅ Move objects inside effect to avoid dependency issues
-useEffect(() => {
-  const options = {
-    serverUrl: serverUrl,
-    roomId: roomId
-  };
-  const connection = createConnection(options);
-  connection.connect();
-  return () => connection.disconnect();
-}, [serverUrl, roomId]); // Only primitive dependencies
-```
-
-### Phase 3: ESLint Configuration Optimization
-
-#### Modern TypeScript-ESLint Setup
-```javascript
-// eslint.config.mjs
-import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
-
-export default tseslint.config(
-  eslint.configs.recommended,
-  tseslint.configs.strictTypeChecked,
-  tseslint.configs.stylisticTypeChecked,
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
-    },
-    rules: {
-      // Disable base rule and use TypeScript version
-      'no-unused-vars': 'off',
-      '@typescript-eslint/no-unused-vars': 'error',
-      
-      // Consistent type imports
-      '@typescript-eslint/consistent-type-imports': 'error',
-      '@typescript-eslint/consistent-type-exports': 'error',
-      
-      // Array type consistency
-      '@typescript-eslint/array-type': ['error', { default: 'array' }],
-      
-      // Prefer nullish coalescing
-      '@typescript-eslint/prefer-nullish-coalescing': 'error'
-    }
-  }
-);
-```
-
-### Phase 4: Backend Testing Best Practices
-
-#### xUnit Test Structure (from Context7 ASP.NET Core docs)
+#### Backend Service Implementation Failures (25+ errors)
 ```csharp
-public class ControllerTests : IClassFixture<WebApplicationFactory<Program>>
-{
-    private readonly HttpClient _client;
-    private readonly WebApplicationFactory<Program> _factory;
-
-    public ControllerTests(WebApplicationFactory<Program> factory)
-    {
-        _factory = factory;
-        _client = factory.CreateClient(new WebApplicationFactoryClientOptions
-        {
-            AllowAutoRedirect = false
-        });
-    }
-
-    [Fact]
-    public async Task GetEndpoint_ReturnsSuccessAndCorrectContentType()
-    {
-        // Arrange
-        var url = "/api/test";
-
-        // Act
-        var response = await _client.GetAsync(url);
-
-        // Assert
-        response.EnsureSuccessStatusCode();
-        Assert.Equal("application/json; charset=utf-8",
-            response.Content.Headers.ContentType.ToString());
-    }
-
-    [Theory]
-    [InlineData("/")]
-    [InlineData("/api/health")]
-    [InlineData("/swagger")]
-    public async Task Get_EndpointsReturnSuccess(string url)
-    {
-        // Act
-        var response = await _client.GetAsync(url);
-
-        // Assert
-        response.EnsureSuccessStatusCode();
-    }
-}
+// Critical service implementation gaps:
+- ValidationService: doesn't implement IValidationService interface
+- JobStatusService: missing required interface methods
+- TerrainGenerators: incomplete interface implementations
+- SignalR Hub: configuration incompatibilities
+- Missing types: GenerationConfig, PreviewRequest, ValidationError
 ```
 
-## 🚀 Implementation Strategy - UPDATED
-
-### Step 1: Fix Critical Backend Structure ✅ COMPLETED
-- [x] Move test files from `src/` to test projects
-- [x] Clean up project references  
-- [x] Reduced backend errors by 66% (310 → 105 errors)
-- [x] Applied xUnit best practices for test organization
-
-### Step 2: Frontend Code Quality Pass (CURRENT)
-**Priority Order Based on Context7 Best Practices:**
-
-#### 2A. Unused Code Cleanup (170 errors) - Week 1
-- [ ] Configure `@typescript-eslint/no-unused-vars` with underscore prefix pattern
-- [ ] Remove unused imports systematically
-- [ ] Clean up unused variables and functions
-- [ ] Use ESLint auto-fix where possible: `npm run lint -- --fix`
-
-#### 2B. Type Safety Improvements (232 warnings) - Week 2  
-- [ ] Replace `any` types with proper interfaces
-- [ ] Use `unknown` for gradual migration where needed
-- [ ] Add proper type annotations for function parameters
-- [ ] Configure `@typescript-eslint/no-explicit-any` rule
-
-#### 2C. Array Type Consistency - Week 2
-- [ ] Replace `Array<T>` with `T[]` syntax
-- [ ] Configure `@typescript-eslint/array-type` rule
-
-### Step 3: React Hook Optimization (Week 3)
-**Based on Context7 React Hook Best Practices:**
-
-#### 3A. useEffect Dependencies
-- [ ] Fix missing dependencies in useEffect hooks
-- [ ] Move object creation inside effects to avoid reference issues
-- [ ] Use primitive values in dependency arrays where possible
-- [ ] Apply `react-hooks/exhaustive-deps` rule fixes
-
-#### 3B. Component Performance
-- [ ] Optimize re-renders with proper dependency management
-- [ ] Fix react-refresh warnings
-- [ ] Clean up component exports
-
-### Step 4: ESLint Configuration Modernization (Week 4)
-- [ ] Migrate to flat config (`eslint.config.mjs`)
-- [ ] Enable `projectService` for better type checking
-- [ ] Add `strictTypeChecked` and `stylisticTypeChecked` configs
-- [ ] Configure consistent type imports/exports
-
-### Step 5: Final Polish (Week 5)
-- [ ] Fix remaining accessibility issues
-- [ ] Optimize test configurations
-- [ ] Performance improvements
-- [ ] Documentation updates
-
-## 📊 Progress Tracking - UPDATED
-
-### Backend Structure ✅ COMPLETED
-- [x] Identified test file location issues
-- [x] Move test files to correct projects  
-- [x] Remove test references from main library
-- [x] Reduced errors from 310 to 105 (66% improvement!)
-- [x] Applied Context7 ASP.NET Core testing best practices
-
-### Frontend Configuration ✅ COMPLETED
-- [x] Updated ESLint to modern typescript-eslint
-- [x] Fixed tsconfig.json patterns
-- [x] Added projectService for better type checking
-- [x] Researched Context7 best practices for implementation
-
-### Code Quality Metrics - MAJOR PROGRESS! 🎉
-- **Starting Point**: 400 ESLint issues (168 errors, 232 warnings)
-- **Current Status**: 285 ESLint issues (68 errors, 217 warnings)
-- **Total Improvement**: 115 issues fixed (28.75% reduction!)
-- **Errors Fixed**: 100 errors (59.5% reduction!)
-- **Warnings Fixed**: 15 warnings (6.5% reduction)
-
-### Implementation Progress ✅ SIGNIFICANT ACHIEVEMENTS
-- [x] **Automated ESLint fixes**: Array types, inferrable types, @ts-ignore → @ts-expect-error
-- [x] **Unused variables cleanup**: Created and ran automated script to fix 73 unused variables
-- [x] **Manual fixes**: Removed unused imports, fixed parsing errors
-- [x] **ESLint configuration**: Enhanced with additional fixable rules
-
-### Remaining Work (68 errors, 217 warnings)
-- **Week 1 Goal**: Fix remaining 68 errors (empty functions, unused vars)
-- **Week 2 Goal**: Address 217 warnings (mostly `any` types)
-- **Week 3 Goal**: React hook optimization
-- **Week 4 Goal**: ESLint modernization
-- **Week 5 Goal**: Final polish
-
-### Implementation Readiness ✅
-- [x] Context7 documentation reviewed for React, TypeScript, ASP.NET Core
-- [x] Best practices identified and documented
-- [x] Specific code examples prepared
-- [x] ESLint configuration patterns ready
-- [x] React hook optimization patterns documented
-- [x] xUnit testing patterns established
-
-## 🛠️ Ready-to-Use Code Snippets
-
-### ESLint Configuration Update
-```bash
-# Install latest typescript-eslint
-npm install --save-dev @typescript-eslint/eslint-plugin@latest @typescript-eslint/parser@latest
-
-# Update to flat config
-mv .eslintrc.cjs eslint.config.mjs
-```
-
-### Quick Fixes Commands
-```bash
-# Auto-fix unused imports and variables
-npm run lint -- --fix
-
-# Check specific file types
-npm run lint -- --ext .ts,.tsx src/
-
-# Fix specific rules
-npm run lint -- --fix --rule '@typescript-eslint/no-unused-vars'
-```
-
-### Type Safety Migration Pattern
+#### Component System Breakdown (30+ errors)
 ```typescript
-// Step 1: Replace any with unknown
-const data: unknown = apiResponse;
-
-// Step 2: Add type guard
-function isValidData(data: unknown): data is ApiResponse {
-  return typeof data === 'object' && data !== null && 'id' in data;
-}
-
-// Step 3: Use type-safe code
-if (isValidData(data)) {
-  console.log(data.id); // TypeScript knows this is safe
-}
+// Component interface mismatches:
+- LevelRenderer: props incompatible with actual usage
+- OptimizedCanvasRenderer: missing required properties
+- ValidatedInput: component interface doesn't match implementation
+- Missing components: referenced in tests but don't exist
 ```
 
-## 🎯 Success Criteria - UPDATED
-1. **Backend Build**: Compiles without errors ✅ (after moving test files)
-2. **Frontend ESLint**: <50 issues remaining (currently 402) 🎯
-3. **Type Safety**: <10 `any` types in critical paths (currently 232) 🎯
-4. **Code Quality**: No unused imports or dead code 🎯
-5. **React Hooks**: All useEffect dependencies properly declared 🎯
-6. **CI/CD Pipeline**: Runs without critical failures ✅
-7. **Test Coverage**: Maintain >80% coverage with proper xUnit patterns ✅
+#### Test Infrastructure Collapse (35+ errors)
+```typescript
+// Test framework chaos:
+- Jest/Vitest syntax mixed throughout codebase
+- Mock implementations incompatible with actual interfaces
+- Test utilities missing or incorrectly typed
+- Canvas/DOM mocking completely broken
+```
 
-## 📝 Implementation Notes - ENHANCED
+### 🟡 HIGH PRIORITY - ARCHITECTURAL ISSUES (50+ errors)
 
-### Context7 Integration Benefits
-- **React Best Practices**: 2,651 code snippets analyzed for hook optimization
-- **TypeScript Patterns**: 19,128 examples for type safety improvements  
-- **ESLint Configuration**: 921 examples for modern typescript-eslint setup
-- **ASP.NET Core Testing**: 15,787 examples for xUnit best practices
+#### API Contract Mismatches (20+ errors)
+- Frontend API client expects different signatures than backend provides
+- Service method parameters don't match interface definitions
+- Return types incompatible between client and server
+- Export/import mismatches throughout service layer
 
-### Systematic Approach
-1. **Errors First**: Fix 170 ESLint errors (unused code) - highest impact
-2. **Type Safety**: Address 232 warnings (any types) - long-term maintainability
-3. **React Optimization**: Hook dependencies and performance
-4. **Modern Tooling**: Flat config ESLint with projectService
-5. **Continuous Improvement**: Automated fixes where possible
+#### Progressive Loading System Failure (15+ errors)
+- TileMap type incompatible with array indexing
+- Entity positioning system broken
+- Level metadata structure mismatched
+- Progressive loading service type incompatibilities
 
-### Timeline Refined
-- **Week 1**: Unused code cleanup (170 errors → 0)
-- **Week 2**: Type safety improvements (232 warnings → <50)
-- **Week 3**: React hook optimization and performance
-- **Week 4**: ESLint modernization and configuration
-- **Week 5**: Final polish and documentation
+#### Error Handling System Breakdown (15+ errors)
+- Error handler interfaces incomplete
+- Notification system type mismatches
+- Callback signatures incompatible
+- Exception handling types missing
 
-### Automation Strategy
-- Use `npm run lint -- --fix` for automated fixes
-- Implement pre-commit hooks for ongoing quality
-- Set up CI/CD checks for regression prevention
-- Document patterns for team consistency
+### 🟢 MEDIUM PRIORITY - INFRASTRUCTURE ISSUES (30+ errors)
 
-## 🚀 Next Immediate Actions
+#### Development Environment Failures (15+ errors)
+- Canvas mocking broken in test environment
+- IntersectionObserver mock incompatible
+- Service Worker registration type issues
+- Accessibility testing setup failures
 
-1. **Start with unused imports cleanup** - highest ROI
-2. **Apply Context7 TypeScript patterns** for type safety
-3. **Implement React hook best practices** from documentation
-4. **Modernize ESLint configuration** with flat config
-5. **Maintain xUnit testing standards** established
+#### Utility Function Type Issues (15+ errors)
+- Helper function signatures incorrect
+- Parameter type mismatches throughout
+- Return type annotations missing or wrong
+- Utility interfaces incomplete
 
-The plan is now complete with specific, actionable guidance based on authoritative Context7 documentation. Ready for systematic implementation! 🎯
+## Realistic Recovery Plan
+
+### Phase 1: Emergency Triage (Week 1-2)
+**Goal**: Get basic compilation working
+
+#### Backend Stabilization
+```bash
+# Day 1-3: Remove test contamination
+- Move all test files to proper test project
+- Fix namespace conflicts (ValidationResult)
+- Add missing NuGet packages for tests
+
+# Day 4-7: Core type definitions
+- Create missing GenerationConfig type
+- Resolve ValidationResult ambiguity
+- Implement missing interface methods
+```
+
+#### Frontend Core Types
+```bash
+# Day 8-10: Fix fundamental types
+- Rebuild Level interface with correct properties
+- Fix Entity interface structure
+- Create proper TileMap type definition
+
+# Day 11-14: Component interface alignment
+- Fix LevelRenderer component props
+- Resolve OptimizedCanvasRenderer issues
+- Create missing component stubs
+```
+
+### Phase 2: Service Layer Reconstruction (Week 3-4)
+**Goal**: Get services communicating properly
+
+#### API Contract Alignment
+```typescript
+// Week 3: Backend service completion
+- Complete ValidationService implementation
+- Fix JobStatusService interface methods
+- Resolve SignalR hub configuration
+
+// Week 4: Frontend service alignment
+- Fix API client method signatures
+- Resolve service import/export issues
+- Implement proper error handling
+```
+
+### Phase 3: Test Infrastructure Rebuild (Week 5-6)
+**Goal**: Get tests running
+
+#### Test Framework Standardization
+```bash
+# Week 5: Framework migration
+- Convert all tests to Vitest
+- Fix mock implementations
+- Resolve test utilities
+
+# Week 6: Test environment setup
+- Fix Canvas/DOM mocking
+- Implement proper test data
+- Resolve accessibility testing
+```
+
+### Phase 4: Build System Recovery (Week 7-8)
+**Goal**: Get full build pipeline working
+
+#### Build Process Repair
+```bash
+# Week 7: Development environment
+- Fix hot reload functionality
+- Resolve debugging capabilities
+- Implement proper linting
+
+# Week 8: Production build
+- Fix Docker configurations
+- Resolve CI/CD pipeline
+- Implement deployment process
+```
+
+## Automated Recovery Scripts
+
+### Script 1: Backend Test Cleanup
+```bash
+#!/bin/bash
+# backend-test-cleanup.sh
+
+# Remove test files from main project
+find backend/ProceduralMiniGameGenerator.WebAPI -name "*Test*.cs" -delete
+find backend/ProceduralMiniGameGenerator.WebAPI -name "*Tests.cs" -delete
+
+# Add test exclusion to project file
+echo '<ItemGroup><Compile Remove="Tests/**/*.cs" /></ItemGroup>' >> backend/ProceduralMiniGameGenerator.WebAPI/ProceduralMiniGameGenerator.WebAPI.csproj
+```
+
+### Script 2: Frontend Type Stub Generation
+```bash
+#!/bin/bash
+# frontend-type-stubs.sh
+
+# Create missing type definitions
+cat > frontend/src/types/stubs.ts << 'EOF'
+// Emergency type stubs - replace with proper implementations
+export interface GenerationConfig {
+  width: number;
+  height: number;
+  seed: number;
+  generationAlgorithm: string;
+  // Add other required properties
+}
+
+export interface ValidationError {
+  field: string;
+  message: string;
+  code: string;
+}
+
+export interface ValidationWarning {
+  field: string;
+  message: string;
+  code: string;
+}
+EOF
+```
+
+### Script 3: Component Stub Generation
+```bash
+#!/bin/bash
+# component-stubs.sh
+
+# Create missing component stubs
+mkdir -p frontend/src/components/stubs
+
+cat > frontend/src/components/stubs/MissingComponents.tsx << 'EOF'
+// Emergency component stubs - replace with proper implementations
+export const LevelPreview = () => <div>LevelPreview - Under Development</div>;
+export const ParameterConfiguration = () => <div>ParameterConfiguration - Under Development</div>;
+export const ExportManager = () => <div>ExportManager - Under Development</div>;
+export const BatchGeneration = () => <div>BatchGeneration - Under Development</div>;
+EOF
+```
+
+## Progress Tracking
+
+### Current Status (January 25, 2025)
+- **Frontend Errors**: 165+ (Build fails)
+- **Backend Errors**: 59+ (Build fails)
+- **Tests**: 0% functional
+- **Build**: 0% functional
+- **Deployment**: 0% functional
+
+### Realistic Milestones
+- **Week 2**: Backend compiles (target: <10 errors)
+- **Week 4**: Frontend compiles (target: <20 errors)
+- **Week 6**: Basic tests run (target: 50% test coverage)
+- **Week 8**: Full build pipeline works (target: deployable)
+
+## Risk Assessment
+
+### High Risk Factors
+- **Technical Debt**: Accumulated over months/years
+- **Architecture Issues**: May require fundamental redesign
+- **Team Knowledge**: Original developers may not be available
+- **Time Pressure**: Business expectations vs. technical reality
+
+### Mitigation Strategies
+1. **Dedicated Recovery Team**: Assign experienced developers full-time
+2. **Incremental Approach**: Fix one system at a time
+3. **Quality Gates**: Prevent regression during recovery
+4. **Documentation**: Record all changes for future maintenance
+
+## Success Criteria
+
+### Minimum Viable Recovery
+- [ ] Backend compiles without errors
+- [ ] Frontend compiles without errors
+- [ ] Basic functionality works (level generation)
+- [ ] Core tests pass
+- [ ] Development environment functional
+
+### Full Recovery
+- [ ] All tests pass
+- [ ] Full feature set functional
+- [ ] Production deployment works
+- [ ] Performance meets requirements
+- [ ] Documentation updated
+
+## Resources Required
+
+### Team
+- **Senior Full-Stack Developer**: 2-3 months full-time
+- **TypeScript Specialist**: 1-2 months full-time
+- **DevOps Engineer**: 2-4 weeks part-time
+- **QA Engineer**: 2-4 weeks part-time
+
+### Tools
+- **IDE**: Visual Studio Code with TypeScript extensions
+- **Build Tools**: Node.js, .NET 8 SDK, Docker
+- **Testing**: Vitest, xUnit, Cypress
+- **CI/CD**: GitHub Actions (needs repair)
+
+---
+
+**IMPORTANT**: This is a realistic assessment based on the actual current state. Previous estimates were overly optimistic. Recovery will require significant dedicated effort and time.
