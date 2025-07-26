@@ -153,10 +153,10 @@ namespace ProceduralMiniGameGenerator.Generators
                     new { 
                         OperationId = operationId,
                         ThemeName = theme.Name,
-                        ColorCount = theme.Colors?.Count ?? 0,
-                        TileSpriteCount = theme.TileSprites?.Count ?? 0,
-                        EntitySpriteCount = theme.EntitySprites?.Count ?? 0,
-                        PropertiesCount = theme.Properties?.Count ?? 0
+                        ColorCount = (theme.Colors?.CustomColors?.Count ?? 0) + 4,
+                        TileSpriteCount = (theme.TileSprites?.Count ?? 0),
+                        EntitySpriteCount = (theme.EntitySprites?.Count ?? 0),
+                        PropertiesCount = (theme.Properties?.Count ?? 0)
                     });
 
                 _baseAssembler.ApplyVisualTheme(level, theme);
@@ -389,7 +389,7 @@ namespace ProceduralMiniGameGenerator.Generators
         /// <summary>
         /// Safely logs a message without throwing exceptions
         /// </summary>
-        private void LogSafely(LogLevel level, string message, object context = null)
+        private void LogSafely(LogLevel level, string message, object? context = null)
         {
             try
             {

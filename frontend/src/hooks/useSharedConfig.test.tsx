@@ -70,7 +70,7 @@ describe('useSharedConfig', () => {
   it('initializes with default values', () => {
     const { result } = renderHook(() => useSharedConfig(), { wrapper });
 
-    expect(result.current.isLoadingShared).toBe(false);
+    expect(result.current.isPendingShared).toBe(false);
     expect(result.current.sharedConfig).toBe(null);
     expect(result.current.shareError).toBe(null);
   });
@@ -81,7 +81,7 @@ describe('useSharedConfig', () => {
 
     const { result } = renderHook(() => useSharedConfig(), { wrapper });
 
-    expect(result.current.isLoadingShared).toBe(true);
+    expect(result.current.isPendingShared).toBe(true);
 
     await act(async () => {
       await new Promise(resolve => setTimeout(resolve, 0));
@@ -89,7 +89,7 @@ describe('useSharedConfig', () => {
 
     expect(apiService.getSharedConfiguration).toHaveBeenCalledWith('test-share-id');
     expect(result.current.sharedConfig).toEqual(mockConfig);
-    expect(result.current.isLoadingShared).toBe(false);
+    expect(result.current.isPendingShared).toBe(false);
     expect(mockSetSearchParams).toHaveBeenCalled();
   });
 
@@ -108,7 +108,7 @@ describe('useSharedConfig', () => {
 
     expect(result.current.shareError).toBe(errorMessage);
     expect(result.current.sharedConfig).toBe(null);
-    expect(result.current.isLoadingShared).toBe(false);
+    expect(result.current.isPendingShared).toBe(false);
   });
 
   it('creates share link successfully', async () => {

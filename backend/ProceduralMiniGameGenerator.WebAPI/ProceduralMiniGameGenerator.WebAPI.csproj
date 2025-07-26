@@ -31,4 +31,8 @@
     <ProjectReference Include="../../src/ProceduralMiniGameGenerator.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Tests/**/*.cs" />
+  </ItemGroup>
+
 </Project>

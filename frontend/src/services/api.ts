@@ -169,4 +169,15 @@ class ApiService {
 }
 
 export const apiService = new ApiService();
+
+// Export individual methods for easier testing and usage
+export const generateLevel = (config: GenerationConfig) => apiService.generateLevel(config);
+export const validateConfiguration = (config: GenerationConfig) => apiService.validateConfiguration(config);
+export const getPresets = () => apiService.getPresets();
+export const savePreset = (preset: Omit<ConfigPreset, 'id' | 'createdAt'>) => apiService.savePreset(preset);
+export const exportLevel = (level: Level, format: string, options: ExportOptions) => apiService.exportLevel(level, format, options);
+export const getExportFormats = () => apiService.getExportFormats();
+export const shareConfiguration = (config: GenerationConfig, expiryDays?: number) => apiService.createShareLink(config, expiryDays);
+export const getSharedConfiguration = (shareId: string) => apiService.getSharedConfiguration(shareId);
+
 export default apiService;

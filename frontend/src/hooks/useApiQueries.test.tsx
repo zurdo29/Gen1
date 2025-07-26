@@ -22,7 +22,7 @@ const createWrapper = () => {
     defaultOptions: {
       queries: {
         retry: false,
-        cacheTime: 0,
+        gcTime: 0,
       },
       mutations: {
         retry: false,
@@ -286,7 +286,7 @@ describe('useApiQueries', () => {
         wrapper: createWrapper(),
       });
 
-      expect(result.current.isIdle).toBe(true);
+      expect(result.current.isPending).toBe(false);
       expect(mockApiService.validateConfiguration).not.toHaveBeenCalled();
     });
 
@@ -352,7 +352,7 @@ describe('useApiQueries', () => {
         .mockRejectedValueOnce(new Error('Temporary error'))
         .mockResolvedValue({ status: 'healthy', version: '1.0.0', timestamp: '2023-01-01' });
 
-      const { result } = renderHook(() => useHealthQuery({ retry: 1 }), {
+      const { result } = renderHook(() => useHealthQuery(), {
         wrapper: createWrapper(),
       });
 

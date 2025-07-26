@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen } from '../../test/utils/test-utils'
+import { render, screen, fireEvent } from '../../test/utils/test-utils'
 import { OptimizedCanvasRenderer } from './OptimizedCanvasRenderer'
 import { mockLevel } from '../../test/mocks/mockData'
 
@@ -8,11 +8,20 @@ const mockOnEntityDrag = vi.fn()
 
 const defaultProps = {
   level: mockLevel,
-  isLoading: false,
-  onTileClick: mockOnTileClick,
-  onEntityDrag: mockOnEntityDrag,
-  showGrid: true,
-  zoom: 1
+  viewport: {
+    x: 0,
+    y: 0,
+    zoom: 1,
+    width: 800,
+    height: 600
+  },
+  renderOptions: {
+    showGrid: true,
+    showEntities: true,
+    showTerrain: true,
+    enableOptimization: true
+  },
+  isLoading: false
 }
 
 describe('OptimizedCanvasRenderer', () => {

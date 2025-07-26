@@ -3,25 +3,25 @@ import { useValidation } from './useValidation';
 import { GenerationConfig } from '../types';
 
 // Mock the validation service
-jest.mock('../services/validation', () => ({
+vi.mock('../services/validation', () => ({
   validationService: {
-    validateConfiguration: jest.fn(),
-    validateField: jest.fn(),
-    getFieldSuggestions: jest.fn()
+    validateConfiguration: vi.fn(),
+    validateField: vi.fn(),
+    getFieldSuggestions: vi.fn()
   }
 }));
 
 // Mock lodash debounce
-jest.mock('lodash', () => ({
+vi.mock('lodash', () => ({
   debounce: (fn: any) => {
-    fn.cancel = jest.fn();
+    fn.cancel = vi.fn();
     return fn;
   }
 }));
 
 import { validationService } from '../services/validation';
 
-const mockValidationService = validationService as jest.Mocked<typeof validationService>;
+const mockValidationService = validationService as any;
 
 describe('useValidation', () => {
   const validConfig: Partial<GenerationConfig> = {
@@ -33,7 +33,7 @@ describe('useValidation', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     
     mockValidationService.validateConfiguration.mockReturnValue({
       isValid: true,

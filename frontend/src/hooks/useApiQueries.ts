@@ -38,7 +38,7 @@ export const useHealthQuery = (options?: UseQueryOptions<{ status: string; versi
     queryKey: queryKeys.health,
     queryFn: () => apiService.checkHealth(),
     staleTime: CACHE_TIMES.short,
-    cacheTime: CACHE_TIMES.medium,
+    gcTime: CACHE_TIMES.medium,
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     ...options,
@@ -51,7 +51,7 @@ export const usePresetsQuery = (options?: UseQueryOptions<ConfigPreset[]>) => {
     queryKey: queryKeys.presets,
     queryFn: () => apiService.getPresets(),
     staleTime: CACHE_TIMES.medium,
-    cacheTime: CACHE_TIMES.long,
+    gcTime: CACHE_TIMES.long,
     ...options,
   });
 };
@@ -78,7 +78,7 @@ export const useExportFormatsQuery = (options?: UseQueryOptions<ExportFormat[]>)
     queryKey: queryKeys.exportFormats,
     queryFn: () => apiService.getExportFormats(),
     staleTime: CACHE_TIMES.long,
-    cacheTime: CACHE_TIMES.veryLong,
+    gcTime: CACHE_TIMES.veryLong,
     ...options,
   });
 };
@@ -90,7 +90,7 @@ export const useSharedConfigQuery = (shareId: string, options?: UseQueryOptions<
     queryFn: () => apiService.getSharedConfiguration(shareId),
     enabled: !!shareId,
     staleTime: CACHE_TIMES.long,
-    cacheTime: CACHE_TIMES.veryLong,
+    gcTime: CACHE_TIMES.veryLong,
     retry: 1, // Don't retry too much for shared configs
     ...options,
   });
@@ -110,15 +110,16 @@ export const useJobStatusQuery = (jobId: string, options?: UseQueryOptions<JobSt
     queryKey: queryKeys.jobStatus(jobId),
     queryFn: () => apiService.getJobStatus(jobId),
     enabled: !!jobId,
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
       // Stop polling when job is completed or failed
+      const data = query.state.data;
       if (data?.status === 'completed' || data?.status === 'failed') {
         return false;
       }
       return 1000; // Poll every second
     },
     staleTime: 0, // Always fetch fresh data for job status
-    cacheTime: CACHE_TIMES.short,
+    gcTime: CACHE_TIMES.short,
     ...options,
   });
 };
@@ -129,14 +130,15 @@ export const useBatchExportStatusQuery = (jobId: string, options?: UseQueryOptio
     queryKey: queryKeys.batchExportStatus(jobId),
     queryFn: () => apiService.getJobStatus(jobId), // Uses same endpoint
     enabled: !!jobId,
-    refetchInterval: (data) => {
+    refetchInterval: (query) => {
+      const data = query.state.data;
       if (data?.status === 'completed' || data?.status === 'failed') {
         return false;
       }
       return 1000;
     },
     staleTime: 0,
-    cacheTime: CACHE_TIMES.short,
+    gcTime: CACHE_TIMES.short,
     ...options,
   });
 };
@@ -170,7 +172,7 @@ export const useConfigValidationQuery = (config: GenerationConfig, options?: Use
     queryFn: () => apiService.validateConfiguration(config),
     enabled: !!config,
     staleTime: CACHE_TIMES.short,
-    cacheTime: CACHE_TIMES.medium,
+    gcTime: CACHE_TIMES.medium,
     ...options,
   });
 };
@@ -250,7 +252,7 @@ export const useCacheManagement = () => {
         total: queries.length,
         fresh: queries.filter(q => q.state.status === 'success' && !q.isStale()).length,
         stale: queries.filter(q => q.isStale()).length,
-        loading: queries.filter(q => q.state.status === 'loading').length,
+        loading: queries.filter(q => q.state.status === 'pending').length,
         error: queries.filter(q => q.state.status === 'error').length,
       };
     },

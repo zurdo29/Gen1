@@ -38,11 +38,7 @@ export const useExport = (): UseExportReturn => {
       setAvailableFormats(formats);
     } catch (error) {
       console.error('Failed to load export formats:', error);
-      addNotification({
-        type: 'error',
-        title: 'Export Error',
-        message: 'Failed to load available export formats'
-      });
+      addNotification('error', 'Export Error', 'Failed to load available export formats');
     }
   }, [addNotification]);
 
@@ -92,11 +88,7 @@ export const useExport = (): UseExportReturn => {
         message: 'Export completed successfully!'
       });
 
-      addNotification({
-        type: 'success',
-        title: 'Export Complete',
-        message: `Level exported as ${fileName}`
-      });
+      addNotification('success', 'Export Complete', `Level exported as ${fileName}`);
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Export failed';
@@ -107,11 +99,7 @@ export const useExport = (): UseExportReturn => {
         error: errorMessage
       });
 
-      addNotification({
-        type: 'error',
-        title: 'Export Failed',
-        message: errorMessage
-      });
+      addNotification('error', 'Export Failed', errorMessage);
       
       throw error;
     }
@@ -193,11 +181,7 @@ export const useExport = (): UseExportReturn => {
         error: errorMessage
       });
 
-      addNotification({
-        type: 'error',
-        title: 'Batch Export Failed',
-        message: errorMessage
-      });
+      addNotification('error', 'Batch Export Failed', errorMessage);
       
       throw error;
     }
@@ -219,11 +203,7 @@ export const useExport = (): UseExportReturn => {
       message: 'Export cancelled'
     });
 
-    addNotification({
-      type: 'info',
-      title: 'Export Cancelled',
-      message: 'Export operation was cancelled'
-    });
+    addNotification('info', 'Export Cancelled', 'Export operation was cancelled');
   }, [exportState.jobId, addNotification]);
 
   const downloadBatchResult = useCallback(async (jobId: string) => {
@@ -265,31 +245,19 @@ export const useExport = (): UseExportReturn => {
       
       if (!result.isValid) {
         const errorMessages = result.errors.map(e => e.message).join(', ');
-        addNotification({
-          type: 'error',
-          title: 'Export Validation Failed',
-          message: errorMessages
-        });
+        addNotification('error', 'Export Validation Failed', errorMessages);
         return false;
       }
 
       if (result.warnings.length > 0) {
         const warningMessages = result.warnings.map(w => w.message).join(', ');
-        addNotification({
-          type: 'warning',
-          title: 'Export Warnings',
-          message: warningMessages
-        });
+        addNotification('warning', 'Export Warnings', warningMessages);
       }
 
       return true;
     } catch (error) {
       console.error('Export validation failed:', error);
-      addNotification({
-        type: 'error',
-        title: 'Validation Error',
-        message: 'Failed to validate export configuration'
-      });
+      addNotification('error', 'Validation Error', 'Failed to validate export configuration');
       return false;
     }
   }, [addNotification]);

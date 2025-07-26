@@ -11,7 +11,8 @@ const defaultProps = {
   value: '',
   onChange: mockOnChange,
   onValidate: mockOnValidate,
-  type: 'text' as const
+  type: 'text' as const,
+  fieldPath: 'test.field'
 }
 
 describe('ValidatedInput', () => {

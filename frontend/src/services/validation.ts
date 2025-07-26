@@ -665,7 +665,7 @@ export class ValidationService {
 
   private validateNestedField(fieldPath: string, _value: any, _config: Partial<GenerationConfig>): FieldValidationResult {
     // Handle nested field validation like 'entities[0].count' or 'gameplay.playerSpeed'
-    _parts = fieldPath.split('.');
+    const parts = fieldPath.split('.');
     const errors: ValidationError[] = [];
     const warnings: ValidationWarning[] = [];
 

@@ -30,16 +30,16 @@ describe('ErrorHandler', () => {
   beforeEach(() => {
     errorHandler = ErrorHandler.getInstance();
     // Reset console methods
-    jest.spyOn(console, 'error').mockImplementation(() => {
+    vi.spyOn(console, 'error').mockImplementation(() => {
       // Mock console.error
     });
-    jest.spyOn(console, 'log').mockImplementation(() => {
+    vi.spyOn(console, 'log').mockImplementation(() => {
       // Mock console.log
     });
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('handleApiError', () => {
@@ -260,7 +260,7 @@ describe('ErrorHandler', () => {
     });
 
     it('should handle recovery action execution', () => {
-      _mockAction = jest.fn();
+      const mockAction = vi.fn();
       const error = createMockAxiosError(500);
       const result = errorHandler.handleApiError(error);
 

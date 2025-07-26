@@ -1,42 +1,43 @@
 import { renderHook, act } from '@testing-library/react';
-import { _AxiosError } from 'axios';
+import { AxiosError } from 'axios';
+import { vi, type MockedFunction } from 'vitest';
 import { useErrorHandling } from './useErrorHandling';
 import { useNotifications } from './useNotifications';
 
 // Mock the useNotifications hook
-jest.mock('./useNotifications');
-const mockUseNotifications = useNotifications as jest.MockedFunction<typeof useNotifications>;
+vi.mock('./useNotifications');
+const mockUseNotifications = useNotifications as MockedFunction<typeof useNotifications>;
 
 // Mock the error handler
-jest.mock('../utils/errorHandling', () => ({
+vi.mock('../utils/errorHandling', () => ({
   errorHandler: {
-    handleApiError: jest.fn(),
-    handleGenerationError: jest.fn(),
-    handleExportError: jest.fn(),
+    handleApiError: vi.fn(),
+    handleGenerationError: vi.fn(),
+    handleExportError: vi.fn(),
   }
 }));
 
 import { errorHandler } from '../utils/errorHandling';
 
-const mockShowError = jest.fn();
-const mockShowWarning = jest.fn();
+const mockShowError = vi.fn();
+const mockShowWarning = vi.fn();
 
 describe('useErrorHandling', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     
     mockUseNotifications.mockReturnValue({
       notifications: [],
-      addNotification: jest.fn(),
-      removeNotification: jest.fn(),
-      clearAllNotifications: jest.fn(),
-      showSuccess: jest.fn(),
+      addNotification: vi.fn(),
+      removeNotification: vi.fn(),
+      clearAllNotifications: vi.fn(),
+      showSuccess: vi.fn(),
       showError: mockShowError,
       showWarning: mockShowWarning,
-      showInfo: jest.fn(),
+      showInfo: vi.fn(),
     });
 
-    (errorHandler.handleApiError as jest.Mock).mockReturnValue({
+    (errorHandler.handleApiError as any).mockReturnValue({
       title: 'Test Error',
       message: 'Test error message',
       code: 'TEST_ERROR',
@@ -87,7 +88,7 @@ describe('useErrorHandling', () => {
     const { result } = renderHook(() => useErrorHandling());
     const mockError = new Error('Generation failed');
 
-    (errorHandler.handleGenerationError as jest.Mock).mockReturnValue({
+    (errorHandler.handleGenerationError as any).mockReturnValue({
       title: 'Generation Error',
       message: 'Generation failed',
       code: 'GENERATION_ERROR'
@@ -110,7 +111,7 @@ describe('useErrorHandling', () => {
     const { result } = renderHook(() => useErrorHandling());
     const mockError = new Error('Export failed');
 
-    (errorHandler.handleExportError as jest.Mock).mockReturnValue({
+    (errorHandler.handleExportError as any).mockReturnValue({
       title: 'Export Error',
       message: 'Export failed',
       code: 'EXPORT_ERROR'
@@ -168,7 +169,7 @@ describe('useErrorHandling', () => {
 
   it('should retry last action successfully', async () => {
     const { result } = renderHook(() => useErrorHandling());
-    const mockRetryAction = jest.fn().mockResolvedValue('success');
+    const mockRetryAction = vi.fn().mockResolvedValue('success');
     const mockError = new Error('Test error');
 
     act(() => {
@@ -187,7 +188,7 @@ describe('useErrorHandling', () => {
 
   it('should handle retry action failure', async () => {
     const { result } = renderHook(() => useErrorHandling());
-    const mockRetryAction = jest.fn().mockRejectedValue(new Error('Retry failed'));
+    const mockRetryAction = vi.fn().mockRejectedValue(new Error('Retry failed'));
     const mockError = new Error('Test error');
 
     act(() => {
@@ -204,7 +205,7 @@ describe('useErrorHandling', () => {
 
   it('should wrap operations with error handling', async () => {
     const { result } = renderHook(() => useErrorHandling());
-    const mockOperation = jest.fn().mockResolvedValue('success');
+    const mockOperation = vi.fn().mockResolvedValue('success');
 
     const wrappedOperation = result.current.withErrorHandling(
       mockOperation,
@@ -219,8 +220,8 @@ describe('useErrorHandling', () => {
 
   it('should handle wrapped operation failures', async () => {
     const { result } = renderHook(() => useErrorHandling());
-    const mockOperation = jest.fn().mockRejectedValue(new Error('Operation failed'));
-    const mockOnError = jest.fn();
+    const mockOperation = vi.fn().mockRejectedValue(new Error('Operation failed'));
+    const mockOnError = vi.fn();
 
     const wrappedOperation = result.current.withErrorHandling(
       mockOperation,
@@ -238,7 +239,7 @@ describe('useErrorHandling', () => {
 
   it('should provide specialized wrapper functions', async () => {
     const { result } = renderHook(() => useErrorHandling());
-    const mockOperation = jest.fn().mockResolvedValue('success');
+    const mockOperation = vi.fn().mockResolvedValue('success');
 
     // Test generation wrapper
     const generationWrapper = result.current.withGenerationErrorHandling(
@@ -291,7 +292,7 @@ describe('useErrorHandling', () => {
     const { result } = renderHook(() => useErrorHandling());
     const mockError = new Error('Warning error');
 
-    (errorHandler.handleApiError as jest.Mock).mockReturnValue({
+    (errorHandler.handleApiError as any).mockReturnValue({
       title: 'Warning Error',
       message: 'Warning message',
       code: 'WARNING_ERROR'

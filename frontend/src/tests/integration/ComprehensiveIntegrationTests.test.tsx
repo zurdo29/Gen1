@@ -9,7 +9,7 @@ import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import App from '../../App';
 import { LevelPreview } from '../../components/LevelPreview';
 import { ParameterConfiguration } from '../../components/ParameterConfiguration';
-import { _ExportManager } from '../../components/ExportManager';
+import { ExportManager } from '../../components/common/ExportManager';
 import { BatchGeneration } from '../../components/BatchGeneration';
 
 // Mock API responses

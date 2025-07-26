@@ -341,7 +341,6 @@ export const useCache = <T>(
   const [error, setError] = React.useState<Error | null>(null);
   
   const cache = options.cache || levelCache;
-  const cacheKey = Array.isArray(key) ? key.join(':') : key;
 
   const loadData = React.useCallback(async (force = false) => {
     if (!force) {

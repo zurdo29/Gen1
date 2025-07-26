@@ -1,4 +1,4 @@
-import { validationService, _ValidationOptions } from './validation';
+import { validationService, ValidationOptions } from './validation';
 import { GenerationConfig } from '../types';
 
 describe('ValidationService', () => {

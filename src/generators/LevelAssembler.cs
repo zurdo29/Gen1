@@ -155,14 +155,7 @@ namespace ProceduralMiniGameGenerator.Generators
                 });
 
                 // Log theme details
-                _logger?.LogInfo("Visual theme details", new {
-                    OperationId = operationId,
-                    ThemeName = theme.Name,
-                    ColorCount = theme.Colors?.Count ?? 0,
-                    TileSpriteCount = theme.TileSprites?.Count ?? 0,
-                    EntitySpriteCount = theme.EntitySprites?.Count ?? 0,
-                    PropertiesCount = theme.Properties?.Count ?? 0
-                });
+                _logger?.LogInfo($"Visual theme details - OperationId: {operationId}, ThemeName: {theme.Name}, ColorCount: {(theme.Colors?.CustomColors?.Count ?? 0) + 4}, TileSpriteCount: {(theme.TileSprites?.Count ?? 0)}, EntitySpriteCount: {(theme.EntitySprites?.Count ?? 0)}, PropertiesCount: {(theme.Properties?.Count ?? 0)}");
 
                 if (_themeApplicationService != null)
                 {

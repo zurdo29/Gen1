@@ -27,7 +27,7 @@ class SignalRService {
 
   private initializeConnection() {
     // Get the base URL for the API
-    const baseUrl = import.meta.env.VITE_API_URL || '';
+    const baseUrl = (import.meta as any).env?.VITE_API_URL || '';
     const hubUrl = `${baseUrl}/hubs/generation`;
 
     this.connection = new HubConnectionBuilder()

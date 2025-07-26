@@ -158,10 +158,11 @@ export interface ValidationWarning {
 
 export interface JobStatus {
   jobId: string;
-  status: 'pending' | 'running' | 'completed' | 'failed';
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'cancelled';
   progress: number; // 0-100
   errorMessage?: string;
   result?: any;
+  metadata?: Record<string, any>;
 }
 
 export interface BatchGenerationRequest {
@@ -191,12 +192,6 @@ export interface AppState {
 }
 
 // Real-time preview types
-export interface PreviewRequestResponse {
-  sessionId: string;
-  status: string;
-  message: string;
-}
-
 export interface PreviewRequestResponse {
   sessionId: string;
   status: string;
