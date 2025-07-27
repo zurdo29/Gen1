@@ -21,6 +21,11 @@ namespace ProceduralMiniGameGenerator.Models
         Item,
         
         /// <summary>
+        /// Collectible item (alias for Item)
+        /// </summary>
+        Collectible,
+        
+        /// <summary>
         /// Power-up item
         /// </summary>
         PowerUp,

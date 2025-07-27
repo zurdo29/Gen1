@@ -62,7 +62,7 @@ namespace ProceduralMiniGameGenerator.Models
             }
             
             // Convert color palette
-            theme.Colors = ColorPalette.FromDictionary(config.ColorPalette);
+            theme.Colors = config.ColorPalette;
             
             return theme;
         }

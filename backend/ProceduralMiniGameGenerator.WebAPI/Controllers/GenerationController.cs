@@ -193,7 +193,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
 
                 var jobStatus = _generationService.GetJobStatus(jobId);
                 
-                if (jobStatus.Status == JobStatusType.NotFound)
+                if (jobStatus.Status == WebApiModels.JobStatusType.NotFound)
                 {
                     return NotFound(new { error = "Job not found or has expired" });
                 }
@@ -464,7 +464,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
                 if (!success)
                 {
                     var jobStatus = _generationService.GetJobStatus(jobId);
-                    if (jobStatus.Status == JobStatusType.NotFound)
+                    if (jobStatus.Status == WebApiModels.JobStatusType.NotFound)
                     {
                         return NotFound(new { error = "Batch job not found or has expired" });
                     }

@@ -177,7 +177,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// Processes a batch generation job (called by Hangfire)
         /// </summary>
         [Queue("batch-generation")]
-        public async Task ProcessBatchGenerationAsync(string jobId, WebApiModels.WebGenerationRequest request)
+        public async Task ProcessBatchGenerationAsync(string jobId, BatchGenerationRequest request)
         {
             var stopwatch = Stopwatch.StartNew();
             var results = new List<object>();
@@ -187,7 +187,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 _logger.LogInformation("Starting batch generation processing for job {JobId}", jobId);
 
                 // Update job status to running
-                await _jobStatusService.UpdateJobStatusAsync(jobId, WebApiModels.JobStatusType.Running, 5, "Starting batch generation");
+                await _jobStatusService.UpdateJobStatusAsync(jobId, WebApiModels.JobStatusType.Running.ToString(), 5, "Starting batch generation");
 
                 // Validate base configuration
                 var validationResult = _levelGenerationService.ValidateConfiguration(request.BaseConfig);
@@ -197,7 +197,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                     return;
                 }
 
-                await _jobStatusService.UpdateJobStatusAsync(jobId, WebApiModels.JobStatusType.Running, 10, "Configuration validated");
+                await _jobStatusService.UpdateJobStatusAsync(jobId, WebApiModels.JobStatusType.Running.ToString(), 10, "Configuration validated");
 
                 // Generate all configuration combinations
                 var configurations = GenerateConfigurationCombinations(request);
@@ -240,7 +240,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
 
                         // Update progress
                         var progress = 10 + (int)((completedCount / (double)totalConfigurations) * 85);
-                        await _jobStatusService.UpdateJobStatusAsync(jobId, JobStatusType.Running, Math.Min(progress, 95), 
+                        await _jobStatusService.UpdateJobStatusAsync(jobId, WebApiModels.JobStatusType.Running.ToString(), Math.Min(progress, 95), 
                             $"Generated {completedCount}/{totalConfigurations} levels");
 
                         _logger.LogDebug("Generated level {LevelId} for job {JobId} ({CompletedCount}/{TotalCount})", 
@@ -251,7 +251,16 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                         _logger.LogError(levelEx, "Failed to generate level for job {JobId} (variation {VariationIndex}, batch {BatchIndex})", 
                             jobId, variationIndex, batchIndex);
 
-                        // Continue with next level instead of failing entire batch
+                        // Add error result to track failures
+                        var errorResult = new
+                        {
+                            id = Guid.NewGuid().ToString(),
+                            error = levelEx.Message,
+                            variationIndex = variationIndex,
+                            batchIndex = batchIndex,
+                            failedAt = DateTime.UtcNow
+                        };
+                        results.Add(errorResult);
                         completedCount++;
                     }
                 }
@@ -289,7 +298,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 {
                     var config = CloneConfig(request.BaseConfig);
                     config.Seed = config.Seed + i; // Vary seed for each batch
-                    configurations.Add((CoreModels.config, 0, i));
+                    configurations.Add((config, 0, i));
                 }
             }
             else
@@ -311,7 +320,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                         // Vary seed for each batch within the same variation
                         config.Seed = config.Seed + batchIndex;
 
-                        configurations.Add((CoreModels.config, varIndex, batchIndex));
+                        configurations.Add((config, varIndex, batchIndex));
                     }
                 }
             }

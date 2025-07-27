@@ -153,14 +153,11 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 Status = WebApiModels.JobStatusType.Pending,
                 Progress = 0,
                 CreatedAt = DateTime.UtcNow,
-                Metadata = new WebApiModels.JobMetadata
+                Metadata = new Dictionary<string, object>
                 {
-                    SessionId = request.SessionId ?? string.Empty,
-                    AdditionalData = new Dictionary<string, string>
-                    {
-                        ["configSize"] = $"{request.Config.Width}x{request.Config.Height}",
-                        ["algorithm"] = request.Config.GenerationAlgorithm
-                    }
+                    ["SessionId"] = request.SessionId ?? string.Empty,
+                    ["configSize"] = $"{request.Config.Width}x{request.Config.Height}",
+                    ["algorithm"] = request.Config.GenerationAlgorithm
                 }
             };
             
@@ -304,19 +301,16 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 Status = WebApiModels.JobStatusType.Pending,
                 Progress = 0,
                 CreatedAt = DateTime.UtcNow,
-                Metadata = new WebApiModels.JobMetadata
+                Metadata = new Dictionary<string, object>
                 {
-                    SessionId = request.SessionId ?? string.Empty,
-                    TotalItems = totalLevels,
-                    AdditionalData = new Dictionary<string, string>
-                    {
-                        ["baseConfigSize"] = $"{request.BaseConfig.Width}x{request.BaseConfig.Height}",
-                        ["algorithm"] = request.BaseConfig.GenerationAlgorithm,
-                        ["totalLevels"] = totalLevels.ToString(),
-                        ["variationCount"] = request.Variations.Count.ToString(),
-                        ["batchCount"] = request.Count.ToString(),
-                        ["type"] = "batch"
-                    }
+                    ["SessionId"] = request.SessionId ?? string.Empty,
+                    ["TotalItems"] = totalLevels,
+                    ["baseConfigSize"] = $"{request.BaseConfig.Width}x{request.BaseConfig.Height}",
+                    ["algorithm"] = request.BaseConfig.GenerationAlgorithm,
+                    ["totalLevels"] = totalLevels.ToString(),
+                    ["variationCount"] = request.Variations.Count.ToString(),
+                    ["batchCount"] = request.Count.ToString(),
+                    ["type"] = "batch"
                 }
             };
             

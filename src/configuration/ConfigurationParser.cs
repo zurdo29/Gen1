@@ -425,7 +425,7 @@ namespace ProceduralMiniGameGenerator.Configuration
                 VisualTheme = new VisualThemeConfig
                 {
                     ThemeName = "default",
-                    ColorPalette = new Dictionary<string, string>
+                    ColorPalette = ColorPalette.FromDictionary(new Dictionary<string, string>
                     {
                         { "ground", "#8B4513" },
                         { "wall", "#654321" },
@@ -433,14 +433,14 @@ namespace ProceduralMiniGameGenerator.Configuration
                         { "player", "#FFD700" },
                         { "enemy", "#DC143C" },
                         { "item", "#32CD32" }
-                    }
+                    })
                 },
                 Gameplay = new GameplayConfig
                 {
                     PlayerSpeed = 5.0f,
                     PlayerHealth = 100,
                     Difficulty = "normal",
-                    TimeLimit = 0.0f,
+                    TimeLimit = (int)0.0f,
                     VictoryConditions = new List<string> { "reach_exit" }
                 }
             };

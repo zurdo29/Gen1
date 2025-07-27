@@ -1,6 +1,7 @@
 using ProceduralMiniGameGenerator.Models;
 using ProceduralMiniGameGenerator.Configuration;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {
@@ -9,6 +10,28 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
     /// </summary>
     public class SimpleConfigurationParser : IConfigurationParser
     {
+        private readonly ILogger<SimpleConfigurationParser> _logger;
+
+        public SimpleConfigurationParser(ILogger<SimpleConfigurationParser> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+        /// <summary>
+        /// Default JSON serialization options
+        /// </summary>
+        private static readonly JsonSerializerOptions DefaultJsonOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            AllowTrailingCommas = true,
+            ReadCommentHandling = JsonCommentHandling.Skip
+        };
+
+        // Configuration limits
+        private const int MaxLevelTiles = 1_000_000;
+        private const int MaxEntitiesPerLevel = 10_000;
+        private const int DefaultLevelSize = 50;
+        private const int DefaultTimeLimit = 300;
+        private const int DefaultPlayerHealth = 3;
         /// <summary>
         /// Parses configuration from a dictionary
         /// </summary>
@@ -20,14 +43,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             try
             {
                 var json = System.Text.Json.JsonSerializer.Serialize(configData);
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    AllowTrailingCommas = true,
-                    ReadCommentHandling = JsonCommentHandling.Skip
-                };
-                
-                var result = JsonSerializer.Deserialize<T>(json, options);
+                var result = JsonSerializer.Deserialize<T>(json, DefaultJsonOptions);
                 return result ?? new T();
             }
             catch (JsonException ex)
@@ -61,11 +77,19 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// </summary>
         public GenerationConfig ParseConfig(string jsonPath)
         {
+            if (string.IsNullOrWhiteSpace(jsonPath))
+            {
+                _logger.LogError("Configuration file path is null or empty");
+                throw new ArgumentException("Configuration file path cannot be null or empty", nameof(jsonPath));
+            }
+
             if (!File.Exists(jsonPath))
             {
+                _logger.LogError("Configuration file not found: {JsonPath}", jsonPath);
                 throw new FileNotFoundException($"Configuration file not found: {jsonPath}");
             }
             
+            _logger.LogDebug("Reading configuration from file: {JsonPath}", jsonPath);
             var jsonContent = File.ReadAllText(jsonPath);
             return ParseConfigFromString(jsonContent);
         }
@@ -75,16 +99,16 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// </summary>
         public GenerationConfig ParseConfigFromString(string jsonContent)
         {
+            if (string.IsNullOrWhiteSpace(jsonContent))
+            {
+                _logger.LogError("JSON content is null or empty");
+                throw new ArgumentException("JSON content cannot be null or empty", nameof(jsonContent));
+            }
+
             try
             {
-                var options = new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    AllowTrailingCommas = true,
-                    ReadCommentHandling = JsonCommentHandling.Skip
-                };
-                
-                var config = JsonSerializer.Deserialize<GenerationConfig>(jsonContent, options);
+                _logger.LogDebug("Parsing configuration from JSON string");
+                var config = JsonSerializer.Deserialize<GenerationConfig>(jsonContent, DefaultJsonOptions);
                 
                 if (config == null)
                 {
@@ -122,14 +146,14 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 errors.AddRange(configErrors);
                 
                 // Additional web-specific validation
-                if (config.Width * config.Height > 1000000) // 1M tiles max
+                if (config.Width * config.Height > MaxLevelTiles)
                 {
-                    errors.Add("Level size too large (maximum 1,000,000 tiles)");
+                    errors.Add($"Level size too large (maximum {MaxLevelTiles:N0} tiles)");
                 }
                 
-                if (config.Entities != null && config.Entities.Sum(e => e.Count) > 10000)
+                if (config.Entities != null && config.Entities.Sum(e => e.Count) > MaxEntitiesPerLevel)
                 {
-                    errors.Add("Too many entities requested (maximum 10,000 entities)");
+                    errors.Add($"Too many entities requested (maximum {MaxEntitiesPerLevel:N0} entities)");
                 }
                 
                 return errors.Count == 0;
@@ -148,8 +172,8 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         {
             return new GenerationConfig
             {
-                Width = 50,
-                Height = 50,
+                Width = DefaultLevelSize,
+                Height = DefaultLevelSize,
                 Seed = Environment.TickCount,
                 GenerationAlgorithm = "perlin",
                 AlgorithmParameters = new Dictionary<string, object>
@@ -200,14 +224,14 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                         Accent = "#FF9800",
                         Background = "#FFFFFF",
                         Text = "#000000"
-                    }
+                    }.ToDictionary()
                 },
                 Gameplay = new GameplayConfig
                 {
-                    Difficulty = 1,
+                    Difficulty = "normal",
                     Objectives = new List<string> { "collect_all" },
-                    TimeLimit = 300,
-                    PlayerHealth = 3
+                    TimeLimit = DefaultTimeLimit,
+                    PlayerHealth = DefaultPlayerHealth
                 }
             };
         }

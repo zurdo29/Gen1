@@ -28,5 +28,10 @@ namespace ProceduralMiniGameGenerator.WebAPI.Models
         /// Preview quality level (affects generation speed vs quality)
         /// </summary>
         public string Quality { get; set; } = "medium";
+
+        /// <summary>
+        /// Debounce time in milliseconds for real-time updates
+        /// </summary>
+        public int DebounceMs { get; set; } = 300;
     }
 }

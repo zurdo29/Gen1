@@ -23,7 +23,7 @@ public class HealthController : ControllerBase
     {
         var healthStatus = await GetHealthStatus();
         
-        if (healthStatus.Status == "Unhealthy")
+        if (((dynamic)healthStatus).Status == "Unhealthy")
         {
             return StatusCode(503, healthStatus);
         }
@@ -36,7 +36,7 @@ public class HealthController : ControllerBase
     {
         var healthStatus = await GetDetailedHealthStatus();
         
-        if (healthStatus.Status == "Unhealthy")
+        if (((dynamic)healthStatus).Status == "Unhealthy")
         {
             return StatusCode(503, healthStatus);
         }
@@ -49,7 +49,7 @@ public class HealthController : ControllerBase
     {
         var readinessStatus = await GetReadinessStatus();
         
-        if (readinessStatus.Status == "NotReady")
+        if (((dynamic)readinessStatus).Status == "NotReady")
         {
             return StatusCode(503, readinessStatus);
         }
@@ -106,7 +106,7 @@ public class HealthController : ControllerBase
             // Thread count
             var threadCount = process.Threads.Count;
             
-            var overallStatus = serviceChecks.All(s => s.Status == "Healthy") ? "Healthy" : "Degraded";
+            var overallStatus = serviceChecks.All(s => ((dynamic)s).Status == "Healthy") ? "Healthy" : "Degraded";
             
             return new
             {
@@ -144,9 +144,9 @@ public class HealthController : ControllerBase
         {
             // Check if all critical services are ready
             var serviceChecks = await CheckServiceDependencies();
-            var criticalServices = serviceChecks.Where(s => s.Critical).ToList();
+            var criticalServices = serviceChecks.Where(s => ((dynamic)s).Critical).ToList();
             
-            var isReady = criticalServices.All(s => s.Status == "Healthy");
+            var isReady = criticalServices.All(s => ((dynamic)s).Status == "Healthy");
             
             return new
             {
@@ -274,8 +274,8 @@ public class HealthController : ControllerBase
             
             // Test write access
             var testFile = Path.Combine(tempPath, $"health-check-{Guid.NewGuid()}.tmp");
-            await File.WriteAllTextAsync(testFile, "health check");
-            File.Delete(testFile);
+            await System.IO.File.WriteAllTextAsync(testFile, "health check");
+            System.IO.File.Delete(testFile);
             
             checks.Add(new
             {

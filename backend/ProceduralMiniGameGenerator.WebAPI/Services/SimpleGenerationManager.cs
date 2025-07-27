@@ -2,7 +2,7 @@ using ProceduralMiniGameGenerator.Models;
 using ProceduralMiniGameGenerator.Generators;
 using ProceduralMiniGameGenerator.Configuration;
 using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
-using Entity = ProceduralMiniGameGenerator.WebAPI.Models.Entity;
+using System.Numerics;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {
@@ -34,7 +34,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Generates a complete level based on configuration
         /// </summary>
-        public Level GenerateLevel(GenerationConfig config)
+        public async Task<Level> GenerateLevel(GenerationConfig config)
         {
             try
             {
@@ -79,7 +79,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             }
             catch (Exception ex)
             {
-                _loggerService.LogErrorAsync(ex, "Level generation failed", new { Config = config }).Wait();
+                await _loggerService.LogErrorAsync(ex, "Level generation failed", new { Config = config });
                 throw;
             }
         }
@@ -117,9 +117,9 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         }
 
         /// <summary>
-        /// Gets the list of available entity placement strategies
+        /// Gets the list of available entity placement algorithms
         /// </summary>
-        public List<string> GetAvailablePlacementStrategies()
+        public List<string> GetAvailableEntityPlacers()
         {
             return _entityPlacers.Keys.ToList();
         }
@@ -525,42 +525,46 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         {
             var random = new Random(seed);
             var entities = new List<Entity>();
-            
-            // Find valid placement positions (ground tiles)
-            var validPositions = new List<(int x, int y)>();
-            for (int x = 0; x < terrain.Width; x++)
-            {
-                for (int y = 0; y < terrain.Height; y++)
-                {
-                    if (terrain.GetTile(x, y) == TileType.Ground)
-                    {
-                        validPositions.Add((x, y));
-                    }
-                }
-            }
+            var usedPositions = new HashSet<(int x, int y)>();
             
             // Place entities from configuration
             foreach (var entityConfig in config.Entities)
             {
-                for (int i = 0; i < entityConfig.Count && validPositions.Count > 0; i++)
+                for (int i = 0; i < entityConfig.Count; i++)
                 {
-                    var posIndex = random.Next(validPositions.Count);
-                    var pos = validPositions[posIndex];
-                    validPositions.RemoveAt(posIndex);
-
-                    entities.Add(new Entity
+                    var position = FindValidPosition(terrain, usedPositions, random);
+                    if (position.HasValue)
                     {
-                        Type = entityConfig.Type.ToString(),
-                        Position = new WebApiModels.Position { X = pos.x, Y = pos.y },
-                        Properties = new Dictionary<string, object>(entityConfig.Properties)
-                    });
+                        usedPositions.Add(position.Value);
+                        var entity = new SimpleEntity(entityConfig.Type, new Vector2(position.Value.x, position.Value.y));
+                        entity.Properties = new Dictionary<string, object>(entityConfig.Properties);
+                        entities.Add(entity);
+                    }
                 }
             }
             
             return entities;
         }
 
-        public bool IsValidPosition(System.Numerics.Vector2 position, TileMap terrain, List<Entity> existingEntities)
+        private (int x, int y)? FindValidPosition(TileMap terrain, HashSet<(int x, int y)> usedPositions, Random random)
+        {
+            const int maxAttempts = 100; // Prevent infinite loops
+            
+            for (int attempt = 0; attempt < maxAttempts; attempt++)
+            {
+                int x = random.Next(terrain.Width);
+                int y = random.Next(terrain.Height);
+                
+                if (terrain.GetTile(x, y) == TileType.Ground && !usedPositions.Contains((x, y)))
+                {
+                    return (x, y);
+                }
+            }
+            
+            return null; // No valid position found
+        }
+
+        public bool IsValidPosition(Vector2 position, TileMap terrain, List<Entity> existingEntities)
         {
             int x = (int)position.X;
             int y = (int)position.Y;

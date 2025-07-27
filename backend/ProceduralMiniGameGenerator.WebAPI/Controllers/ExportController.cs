@@ -192,7 +192,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
             {
                 var status = await _exportService.GetBatchExportStatusAsync(jobId);
 
-                if (status.Status == JobStatusType.NotFound)
+                if (status.Status == WebApiModels.JobStatusType.NotFound)
                 {
                     return NotFound(new { error = "Batch export job not found", jobId });
                 }
@@ -229,12 +229,12 @@ namespace ProceduralMiniGameGenerator.WebAPI.Controllers
                 // Check job status first
                 var status = await _exportService.GetBatchExportStatusAsync(jobId);
 
-                if (status.Status == JobStatusType.NotFound)
+                if (status.Status == WebApiModels.JobStatusType.NotFound)
                 {
                     return NotFound(new { error = "Batch export job not found", jobId });
                 }
 
-                if (status.Status != JobStatusType.Completed)
+                if (status.Status != WebApiModels.JobStatusType.Completed)
                 {
                     return BadRequest(new { 
                         error = "Batch export is not completed yet", 

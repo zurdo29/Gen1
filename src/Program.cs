@@ -100,7 +100,7 @@ static void TestExampleConfiguration()
         VisualTheme = new VisualThemeConfig
         {
             ThemeName = "forest",
-            ColorPalette = new System.Collections.Generic.Dictionary<string, string>
+            ColorPalette = ColorPalette.FromDictionary(new System.Collections.Generic.Dictionary<string, string>
             {
                 { "ground", "#8B4513" },
                 { "wall", "#654321" },
@@ -109,7 +109,7 @@ static void TestExampleConfiguration()
                 { "player", "#FFD700" },
                 { "enemy", "#DC143C" },
                 { "item", "#32CD32" }
-            },
+            }),
             TileSprites = new System.Collections.Generic.Dictionary<string, string>
             {
                 { "ground", "sprites/tiles/ground_forest.png" },
@@ -136,7 +136,7 @@ static void TestExampleConfiguration()
             PlayerSpeed = 6.0f,
             PlayerHealth = 150,
             Difficulty = "normal",
-            TimeLimit = 300.0f,
+            TimeLimit = (int)300.0f,
             VictoryConditions = new System.Collections.Generic.List<string> { "reach_exit", "collect_all_items" },
             Mechanics = new System.Collections.Generic.Dictionary<string, object>
             {

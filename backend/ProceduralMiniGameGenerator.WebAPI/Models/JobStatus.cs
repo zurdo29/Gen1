@@ -27,6 +27,30 @@ namespace ProceduralMiniGameGenerator.WebAPI.Models
         public int? TotalItems { get; set; }
         public int? ProcessedItems { get; set; }
         public Dictionary<string, string>? AdditionalData { get; set; }
+
+        /// <summary>
+        /// Converts JobMetadata to Dictionary for compatibility
+        /// </summary>
+        public Dictionary<string, object> ToDictionary()
+        {
+            var result = new Dictionary<string, object>();
+            
+            if (SessionId != null)
+                result["SessionId"] = SessionId;
+            if (TotalItems.HasValue)
+                result["TotalItems"] = TotalItems.Value;
+            if (ProcessedItems.HasValue)
+                result["ProcessedItems"] = ProcessedItems.Value;
+            if (AdditionalData != null)
+            {
+                foreach (var kvp in AdditionalData)
+                {
+                    result[kvp.Key] = kvp.Value;
+                }
+            }
+            
+            return result;
+        }
     }
 
     /// <summary>

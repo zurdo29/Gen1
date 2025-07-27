@@ -14,8 +14,9 @@ using System.Text.Json;
 using Asp.Versioning;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.DataProtection;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Swashbuckle.AspNetCore.SwaggerUI;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
+
 
 var builder = WebApplication.CreateBuilder(args);
 

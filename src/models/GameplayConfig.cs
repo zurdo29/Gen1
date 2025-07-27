@@ -5,57 +5,51 @@ using System.Linq;
 namespace ProceduralMiniGameGenerator.Models
 {
     /// <summary>
-    /// Configuration for gameplay mechanics
+    /// Configuration for gameplay-specific settings
     /// </summary>
     public class GameplayConfig
     {
         /// <summary>
-        /// Player movement speed
+        /// Difficulty level (easy, normal, hard)
         /// </summary>
-        [Range(0.1f, 50.0f, ErrorMessage = "Player speed must be between 0.1 and 50")]
-        public float PlayerSpeed { get; set; } = 5.0f;
-        
-        /// <summary>
-        /// Player health points
-        /// </summary>
-        [Range(1, 10000, ErrorMessage = "Player health must be between 1 and 10000")]
-        public int PlayerHealth { get; set; } = 100;
-        
-        /// <summary>
-        /// Game difficulty level
-        /// </summary>
-        [Required(ErrorMessage = "Difficulty level is required")]
         public string Difficulty { get; set; } = "normal";
         
         /// <summary>
-        /// Time limit for the level (0 = no limit)
+        /// List of objectives for the level
         /// </summary>
-        [Range(0.0f, 3600.0f, ErrorMessage = "Time limit must be between 0 and 3600 seconds")]
-        public float TimeLimit { get; set; } = 0.0f;
+        public List<string> Objectives { get; set; } = new List<string>();
         
         /// <summary>
-        /// Victory conditions
+        /// Time limit in seconds (0 = no limit)
         /// </summary>
-        public List<string> VictoryConditions { get; set; } = new List<string> { "reach_exit" };
+        [Range(0, int.MaxValue, ErrorMessage = "Time limit must be non-negative")]
+        public int TimeLimit { get; set; } = 0;
         
         /// <summary>
-        /// Game objectives (alias for VictoryConditions for backward compatibility)
+        /// Player starting health
         /// </summary>
-        public List<string> Objectives 
-        { 
-            get => VictoryConditions; 
-            set => VictoryConditions = value; 
-        }
+        [Range(1, 100, ErrorMessage = "Player health must be between 1 and 100")]
+        public int PlayerHealth { get; set; } = 3;
         
         /// <summary>
-        /// Special gameplay mechanics
+        /// Player movement speed
+        /// </summary>
+        [Range(0.1f, 10.0f, ErrorMessage = "Player speed must be between 0.1 and 10.0")]
+        public float PlayerSpeed { get; set; } = 1.0f;
+
+        /// <summary>
+        /// Victory conditions for the level
+        /// </summary>
+        public List<string> VictoryConditions { get; set; } = new List<string>();
+
+        /// <summary>
+        /// Game mechanics configuration
         /// </summary>
         public Dictionary<string, object> Mechanics { get; set; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// Validates the gameplay configuration and returns validation errors
+        /// Validates the gameplay configuration
         /// </summary>
-        /// <returns>List of validation error messages</returns>
         public List<string> Validate()
         {
             var errors = new List<string>();
@@ -67,26 +61,11 @@ namespace ProceduralMiniGameGenerator.Models
                 errors.AddRange(results.Select(r => r.ErrorMessage ?? "Unknown validation error"));
             }
 
-            // Additional custom validation
-            if (!IsValidDifficulty(Difficulty))
+            // Validate difficulty
+            var validDifficulties = new[] { "easy", "normal", "hard" };
+            if (!string.IsNullOrEmpty(Difficulty) && !validDifficulties.Contains(Difficulty.ToLower()))
             {
-                errors.Add($"Unknown difficulty level: {Difficulty}. Valid difficulties are: easy, normal, hard, extreme");
-            }
-
-            // Validate victory conditions
-            if (VictoryConditions == null || VictoryConditions.Count == 0)
-            {
-                errors.Add("At least one victory condition must be specified");
-            }
-            else
-            {
-                foreach (var condition in VictoryConditions)
-                {
-                    if (!IsValidVictoryCondition(condition))
-                    {
-                        errors.Add($"Unknown victory condition: {condition}. Valid conditions are: reach_exit, collect_all_items, defeat_all_enemies, survive_time, reach_score");
-                    }
-                }
+                errors.Add($"Invalid difficulty '{Difficulty}'. Valid difficulties are: {string.Join(", ", validDifficulties)}");
             }
 
             return errors;
@@ -99,31 +78,14 @@ namespace ProceduralMiniGameGenerator.Models
         {
             return new GameplayConfig
             {
-                PlayerSpeed = this.PlayerSpeed,
-                PlayerHealth = this.PlayerHealth,
                 Difficulty = this.Difficulty,
+                Objectives = new List<string>(this.Objectives),
                 TimeLimit = this.TimeLimit,
+                PlayerHealth = this.PlayerHealth,
+                PlayerSpeed = this.PlayerSpeed,
                 VictoryConditions = new List<string>(this.VictoryConditions),
                 Mechanics = new Dictionary<string, object>(this.Mechanics)
             };
-        }
-
-        /// <summary>
-        /// Checks if the difficulty level is valid
-        /// </summary>
-        private static bool IsValidDifficulty(string difficulty)
-        {
-            var validDifficulties = new[] { "easy", "normal", "hard", "extreme" };
-            return !string.IsNullOrEmpty(difficulty) && validDifficulties.Contains(difficulty.ToLower());
-        }
-
-        /// <summary>
-        /// Checks if the victory condition is valid
-        /// </summary>
-        private static bool IsValidVictoryCondition(string condition)
-        {
-            var validConditions = new[] { "reach_exit", "collect_all_items", "defeat_all_enemies", "survive_time", "reach_score" };
-            return !string.IsNullOrEmpty(condition) && validConditions.Contains(condition.ToLower());
         }
     }
 }
