@@ -1,16 +1,17 @@
 using FluentValidation;
 using Hangfire;
 using Microsoft.Extensions.Options;
-using ProceduralMiniGameGenerator.Configuration;
-using ProceduralMiniGameGenerator.Generators;
-using ProceduralMiniGameGenerator.Interfaces;
-using ProceduralMiniGameGenerator.Models;
 using ProceduralMiniGameGenerator.WebAPI.Configuration;
+using ProceduralMiniGameGenerator.Core;
+using ProceduralMiniGameGenerator.Configuration;
+using ProceduralMiniGameGenerator.WebAPI.Models;
 using ProceduralMiniGameGenerator.WebAPI.Exceptions;
+using ProceduralMiniGameGenerator.Models;
 using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 using CoreModels = ProceduralMiniGameGenerator.Models;
 using BatchGenerationRequest = ProceduralMiniGameGenerator.WebAPI.Models.BatchGenerationRequest;
 using System.Diagnostics;
+using Result = ProceduralMiniGameGenerator.WebAPI.Models.Result;
 
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
@@ -321,7 +322,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Generates all combinations of variation values
         /// </summary>
-        private List<List<object>> GenerateVariationCombinations(List<CoreModels.ConfigVariation> variations)
+        private List<List<object>> GenerateVariationCombinations(List<WebApiModels.ConfigVariation> variations)
         {
             var combinations = new List<List<object>>();
             
@@ -359,7 +360,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Applies variation values to a configuration
         /// </summary>
-        private void ApplyVariationToConfig(CoreModels.GenerationConfig config, List<CoreModels.ConfigVariation> variations, List<object> values)
+        private void ApplyVariationToConfig(CoreModels.GenerationConfig config, List<WebApiModels.ConfigVariation> variations, List<object> values)
         {
             for (int i = 0; i < variations.Count && i < values.Count; i++)
             {

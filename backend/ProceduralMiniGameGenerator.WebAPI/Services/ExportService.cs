@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Globalization;
-using ILevelExportService = ProceduralMiniGameGenerator.Interfaces.ILevelExportService;
+using ILevelExportService = ProceduralMiniGameGenerator.Core.ILevelExportService;
 using TileType = ProceduralMiniGameGenerator.Models.TileType;
 
 

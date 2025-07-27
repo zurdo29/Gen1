@@ -2,8 +2,10 @@ using Hangfire;
 using Microsoft.Extensions.Caching.Memory;
 using CoreModels = ProceduralMiniGameGenerator.Models;
 using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
+using ProceduralMiniGameGenerator.WebAPI.Configuration;
+using ProceduralMiniGameGenerator.Core;
 using ProceduralMiniGameGenerator.Configuration;
-using ProceduralMiniGameGenerator.Generators;
+using ProceduralMiniGameGenerator.Models;
 using System.Diagnostics;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
@@ -62,7 +64,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
 
                 // Check cache first
                 var cacheKey = GenerateCacheKey(request.Config);
-                if (_cache.TryGetValue(cacheKey, out CoreModels.Level? cachedLevel) && CoreModels.cachedLevel != null)
+                if (_cache.TryGetValue(cacheKey, out CoreModels.Level? cachedLevel) && cachedLevel != null)
                 {
                     await _loggerService.LogAsync(Microsoft.Extensions.Logging.LogLevel.Information,
                         "Returning cached level",
