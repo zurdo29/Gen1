@@ -1,4 +1,4 @@
-# Known Issues
+ # Known Issues
 
 This document outlines the current known issues in the Procedural Mini Game Generator project.
 

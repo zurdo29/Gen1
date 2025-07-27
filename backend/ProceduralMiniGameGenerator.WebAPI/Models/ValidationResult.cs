@@ -24,6 +24,31 @@ namespace ProceduralMiniGameGenerator.WebAPI.Models
         /// Additional validation metadata
         /// </summary>
         public Dictionary<string, object> Metadata { get; set; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public ValidationResult()
+        {
+        }
+
+        /// <summary>
+        /// Constructor with single error message
+        /// </summary>
+        public ValidationResult(string errorMessage)
+        {
+            IsValid = false;
+            Errors.Add(errorMessage);
+        }
+
+        /// <summary>
+        /// Constructor with multiple error messages
+        /// </summary>
+        public ValidationResult(List<string> errors)
+        {
+            IsValid = false;
+            Errors = errors ?? new List<string>();
+        }
         
         /// <summary>
         /// Creates a successful validation result

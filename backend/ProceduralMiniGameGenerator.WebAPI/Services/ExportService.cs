@@ -10,6 +10,10 @@ using System.Xml.Serialization;
 using System.Globalization;
 using ILevelExportService = ProceduralMiniGameGenerator.Core.ILevelExportService;
 using TileType = ProceduralMiniGameGenerator.Models.TileType;
+using CoreLogLevel = ProceduralMiniGameGenerator.Core.LogLevel;
+using MsLogLevel = Microsoft.Extensions.Logging.LogLevel;
+using CoreModels = ProceduralMiniGameGenerator.Models;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
@@ -37,7 +41,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// </summary>
         public async Task<List<ExportFormat>> GetAvailableFormatsAsync()
         {
-            await _loggerService.LogAsync(LogLevel.Information, "Getting available export formats");
+            await _loggerService.LogAsync(CoreLogLevel.Information, "Getting available export formats");
 
             return new List<ExportFormat>
             {
@@ -134,7 +138,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
 
             try
             {
-                await _loggerService.LogAsync(LogLevel.Information,
+                await _loggerService.LogAsync(CoreLogLevel.Information,
                     $"Starting level export to {request.Format} format",
                     new { Format = request.Format, LevelName = request.Level?.Name });
 
@@ -180,13 +184,13 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
 
                 if (result.Success)
                 {
-                    await _loggerService.LogAsync(LogLevel.Information,
+                    await _loggerService.LogAsync(CoreLogLevel.Information,
                         $"Level export completed successfully",
                         new { Format = request.Format, FileSize = result.FileSize, Duration = stopwatch.Elapsed });
                 }
                 else
                 {
-                    await _loggerService.LogAsync(LogLevel.Warning,
+                    await _loggerService.LogAsync(CoreLogLevel.Warning,
                         $"Level export failed",
                         new { Format = request.Format, Errors = result.Errors, Duration = stopwatch.Elapsed });
                 }
@@ -221,7 +225,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 Progress = 0
             };
 
-            await _loggerService.LogAsync(LogLevel.Information,
+            await _loggerService.LogAsync(CoreLogLevel.Information,
                 $"Starting batch export job",
                 new { JobId = jobId, LevelCount = request.Levels.Count, Format = request.Format });
 
@@ -329,7 +333,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                     ["totalSize"] = exportedFiles.Sum(f => f.data.Length)
                 };
 
-                await _loggerService.LogAsync(LogLevel.Information,
+                await _loggerService.LogAsync(CoreLogLevel.Information,
                     $"Batch export completed successfully",
                     new { JobId = jobId, FileCount = exportedFiles.Count });
             }
@@ -583,7 +587,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             {
                 FormatVersion = "1.0",
                 ExportTimestamp = DateTime.UtcNow,
-                Level = new LevelData
+                Level = new WebApiModels.LevelData
                 {
                     Name = level.Name,
                     Width = level.Terrain?.Width ?? 0,
@@ -622,7 +626,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 serialized.Add(new ProceduralMiniGameGenerator.WebAPI.Models.EntityData
                 {
                     Type = entity.Type.ToString(),
-                    Position = new PositionData { X = entity.Position.X, Y = entity.Position.Y },
+                    Position = new WebApiModels.PositionData { X = entity.Position.X, Y = entity.Position.Y },
                     Properties = entity.Properties ?? new Dictionary<string, object>()
                 });
             }
@@ -745,7 +749,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 result.FileSize = result.FileData.Length;
                 result.Success = true;
 
-                await _loggerService.LogAsync(LogLevel.Information,
+                await _loggerService.LogAsync(CoreLogLevel.Information,
                     "Web JSON export completed",
                     new { CompactFormat = compactFormat, FileSize = result.FileSize });
             }
@@ -779,7 +783,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 result.FileSize = result.FileData.Length;
                 result.Success = true;
 
-                await _loggerService.LogAsync(LogLevel.Information,
+                await _loggerService.LogAsync(CoreLogLevel.Information,
                     "Image export completed",
                     new { Width = width, Height = height, FileSize = result.FileSize });
             }
@@ -876,7 +880,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 result.FileSize = result.FileData.Length;
                 result.Success = true;
 
-                await _loggerService.LogAsync(LogLevel.Information,
+                await _loggerService.LogAsync(CoreLogLevel.Information,
                     "Extended CSV export completed",
                     new { IncludeEntities = includeEntities, FileSize = result.FileSize });
             }
@@ -956,7 +960,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 result.FileSize = result.FileData.Length;
                 result.Success = true;
 
-                await _loggerService.LogAsync(LogLevel.Information,
+                await _loggerService.LogAsync(CoreLogLevel.Information,
                     "Share URL export completed",
                     new { ShareId = shareId, ExpirationDays = expirationDays });
             }
@@ -1172,7 +1176,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         {
             // In a real implementation, this would store to a database or cache
             // For now, we'll use in-memory storage (this is just for demonstration)
-            await _loggerService.LogAsync(LogLevel.Information,
+            await _loggerService.LogAsync(CoreLogLevel.Information,
                 $"Share data stored",
                 new { ShareId = shareId, Expiration = expiration });
         }
@@ -1182,7 +1186,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             // This is a placeholder implementation for image generation
             // In a real implementation, you would use a graphics library like SkiaSharp or System.Drawing
 
-            await _loggerService.LogAsync(LogLevel.Information,
+            await _loggerService.LogAsync(CoreLogLevel.Information,
                 "Generating level image",
                 new { Width = width, Height = height, TileSize = tileSize });
 

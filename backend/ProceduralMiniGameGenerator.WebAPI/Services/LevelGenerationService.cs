@@ -188,10 +188,10 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 config.Height.ToString(),
                 config.Seed.ToString(),
                 config.GenerationAlgorithm,
-                string.Join(",", config.TerrainTypes ?? Array.Empty<string>()),
-                string.Join(",", config.Entities?.Select(e => $"{e.Type}:{e.Count}") ?? Array.Empty<string>()),
+                string.Join(",", config.TerrainTypes ?? Enumerable.Empty<string>()),
+                string.Join(",", config.Entities?.Select(e => $"{e.Type}:{e.Count}") ?? Enumerable.Empty<string>()),
                 config.VisualTheme?.ThemeName ?? "default",
-                string.Join(",", config.AlgorithmParameters?.Select(kvp => $"{kvp.Key}:{kvp.Value}") ?? Array.Empty<string>())
+                string.Join(",", config.AlgorithmParameters?.Select(kvp => $"{kvp.Key}:{kvp.Value}") ?? Enumerable.Empty<string>())
             };
 
             var keyString = string.Join("|", keyComponents);

@@ -158,7 +158,7 @@ public class SecurityService : ISecurityService
                 return new WebApiModels.ValidationResult("Configuration JSON is too large");
             }
             
-            return WebApiModels.ValidationResult.Success!;
+            return WebApiModels.ValidationResult.Success();
         }
         catch (JsonException ex)
         {

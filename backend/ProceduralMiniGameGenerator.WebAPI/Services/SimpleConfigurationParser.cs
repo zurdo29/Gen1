@@ -205,9 +205,9 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 Gameplay = new GameplayConfig
                 {
                     Difficulty = 1,
-                    ObjectiveType = "collect_all",
+                    Objectives = new List<string> { "collect_all" },
                     TimeLimit = 300,
-                    PlayerLives = 3
+                    PlayerHealth = 3
                 }
             };
         }

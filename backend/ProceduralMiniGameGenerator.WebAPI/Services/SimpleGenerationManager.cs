@@ -2,6 +2,7 @@ using ProceduralMiniGameGenerator.Models;
 using ProceduralMiniGameGenerator.Generators;
 using ProceduralMiniGameGenerator.Configuration;
 using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
+using Entity = ProceduralMiniGameGenerator.WebAPI.Models.Entity;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {
@@ -126,17 +127,18 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         /// <summary>
         /// Validates that a configuration can be used for generation
         /// </summary>
-        public ValidationResult ValidateGenerationConfig(GenerationConfig config)
+        public WebApiModels.ValidationResult ValidateGenerationConfig(GenerationConfig config)
         {
             var isValid = _configurationParser.ValidateConfig(config, out var errors);
             
             if (isValid)
             {
-                return ValidationResult.Success();
+                
+                return WebApiModels.ValidationResult.Success();
             }
             else
             {
-                return ValidationResult.Failure(errors);
+                return WebApiModels.ValidationResult.Failure(errors);
             }
         }
 
@@ -545,10 +547,10 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                     var posIndex = random.Next(validPositions.Count);
                     var pos = validPositions[posIndex];
                     validPositions.RemoveAt(posIndex);
-                    
-                    entities.Add(new WebApiModels.Entity
+
+                    entities.Add(new Entity
                     {
-                        Type = entityConfig.Type,
+                        Type = entityConfig.Type.ToString(),
                         Position = new WebApiModels.Position { X = pos.x, Y = pos.y },
                         Properties = new Dictionary<string, object>(entityConfig.Properties)
                     });

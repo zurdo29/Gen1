@@ -50,7 +50,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
     {
         public void Apply(GenerationConfig config, object value)
         {
-            if (TryConvertToInt32(value, out var intValue))
+            if (ParameterApplicatorExtensions.TryConvertToInt32(value, out var intValue))
                 config.Seed = intValue;
         }
     }
@@ -59,7 +59,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
     {
         public void Apply(GenerationConfig config, object value)
         {
-            if (TryConvertToInt32(value, out var intValue) && intValue > 0)
+            if (ParameterApplicatorExtensions.TryConvertToInt32(value, out var intValue) && intValue > 0)
                 config.Width = intValue;
         }
     }
@@ -68,7 +68,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
     {
         public void Apply(GenerationConfig config, object value)
         {
-            if (TryConvertToInt32(value, out var intValue) && intValue > 0)
+            if (ParameterApplicatorExtensions.TryConvertToInt32(value, out var intValue) && intValue > 0)
                 config.Height = intValue;
         }
     }
@@ -102,8 +102,8 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         public void Apply(GenerationConfig config, object value)
         {
             config.Gameplay ??= new GameplayConfig();
-            if (TryConvertToDouble(value, out var doubleValue) && doubleValue > 0)
-                config.Gameplay.PlayerSpeed = doubleValue;
+            if (ParameterApplicatorExtensions.TryConvertToDouble(value, out var doubleValue) && doubleValue > 0)
+                config.Gameplay.PlayerSpeed = (float)doubleValue;
         }
     }
 
@@ -112,7 +112,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
         public void Apply(GenerationConfig config, object value)
         {
             config.Gameplay ??= new GameplayConfig();
-            if (TryConvertToInt32(value, out var intValue) && intValue > 0)
+            if (ParameterApplicatorExtensions.TryConvertToInt32(value, out var intValue) && intValue > 0)
                 config.Gameplay.TimeLimit = intValue;
         }
     }

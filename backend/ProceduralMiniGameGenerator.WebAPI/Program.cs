@@ -12,6 +12,10 @@ using ProceduralMiniGameGenerator.WebAPI.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Asp.Versioning;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.DataProtection;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 

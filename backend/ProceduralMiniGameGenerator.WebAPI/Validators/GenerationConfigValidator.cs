@@ -112,12 +112,12 @@ namespace ProceduralMiniGameGenerator.WebAPI.Validators
             RuleFor(x => x.PlayerSpeed)
                 .InclusiveBetween(settings.MinPlayerSpeed, settings.MaxPlayerSpeed)
                 .WithMessage($"Player speed must be between {settings.MinPlayerSpeed} and {settings.MaxPlayerSpeed}")
-                .When(x => x.PlayerSpeed.HasValue);
+                .When(x => x.PlayerSpeed > 0f);
 
             RuleFor(x => x.TimeLimit)
                 .InclusiveBetween(1, settings.MaxTimeLimit)
                 .WithMessage($"Time limit must be between 1 and {settings.MaxTimeLimit} seconds")
-                .When(x => x.TimeLimit.HasValue);
+                .When(x => x.TimeLimit > 0f);
         }
     }
 }
