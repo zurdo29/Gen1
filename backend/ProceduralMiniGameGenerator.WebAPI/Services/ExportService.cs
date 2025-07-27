@@ -528,7 +528,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             return new { tiles };
         }
 
-        private object ConvertEntitiesForUnity(List<Entity>? entities, string coordinateSystem, float scaleFactor)
+        private object ConvertEntitiesForUnity(List<ProceduralMiniGameGenerator.Models.Entity>? entities, string coordinateSystem, float scaleFactor)
         {
             if (entities == null) return new { entities = new object[0] };
 
@@ -611,7 +611,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             return serialized;
         }
 
-        private List<ProceduralMiniGameGenerator.WebAPI.Models.EntityData> SerializeEntities(List<Entity>? entities)
+        private List<ProceduralMiniGameGenerator.WebAPI.Models.EntityData> SerializeEntities(List<ProceduralMiniGameGenerator.Models.Entity>? entities)
         {
             var serialized = new List<ProceduralMiniGameGenerator.WebAPI.Models.EntityData>();
 
@@ -1021,7 +1021,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             }
         }
 
-        private object CreateWebOptimizedEntities(List<Entity>? entities, bool compactFormat)
+        private object CreateWebOptimizedEntities(List<ProceduralMiniGameGenerator.Models.Entity>? entities, bool compactFormat)
         {
             if (entities == null) return new { entities = new object[0] };
 
@@ -1086,7 +1086,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             return distribution;
         }
 
-        private Dictionary<string, int> CalculateEntitySummary(List<Entity>? entities)
+        private Dictionary<string, int> CalculateEntitySummary(List<ProceduralMiniGameGenerator.Models.Entity>? entities)
         {
             var summary = new Dictionary<string, int>();
 

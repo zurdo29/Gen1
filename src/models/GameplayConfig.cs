@@ -39,6 +39,15 @@ namespace ProceduralMiniGameGenerator.Models
         public List<string> VictoryConditions { get; set; } = new List<string> { "reach_exit" };
         
         /// <summary>
+        /// Game objectives (alias for VictoryConditions for backward compatibility)
+        /// </summary>
+        public List<string> Objectives 
+        { 
+            get => VictoryConditions; 
+            set => VictoryConditions = value; 
+        }
+        
+        /// <summary>
         /// Special gameplay mechanics
         /// </summary>
         public Dictionary<string, object> Mechanics { get; set; } = new Dictionary<string, object>();

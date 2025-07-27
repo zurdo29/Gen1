@@ -1,6 +1,7 @@
 using ProceduralMiniGameGenerator.Models;
 using ProceduralMiniGameGenerator.Generators;
 using ProceduralMiniGameGenerator.Configuration;
+using WebApiModels = ProceduralMiniGameGenerator.WebAPI.Models;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {
@@ -545,10 +546,10 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                     var pos = validPositions[posIndex];
                     validPositions.RemoveAt(posIndex);
                     
-                    entities.Add(new Entity
+                    entities.Add(new WebApiModels.Entity
                     {
                         Type = entityConfig.Type,
-                        Position = new Position { X = pos.x, Y = pos.y },
+                        Position = new WebApiModels.Position { X = pos.x, Y = pos.y },
                         Properties = new Dictionary<string, object>(entityConfig.Properties)
                     });
                 }

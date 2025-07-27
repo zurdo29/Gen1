@@ -1,5 +1,7 @@
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using CoreLogLevel = ProceduralMiniGameGenerator.Core.LogLevel;
+using MsLogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace ProceduralMiniGameGenerator.WebAPI.Services
 {
@@ -27,7 +29,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             _scopeContext = scopeContext;
         }
         
-        public async Task LogAsync(LogLevel level, string message, object? context = null)
+        public async Task LogAsync(MsLogLevel level, string message, object? context = null)
         {
             var logContext = CreateLogContext(context);
             
@@ -35,6 +37,24 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             _logger.Log(level, "{Message} {@Context}", message, logContext);
             
             await Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Converts core LogLevel to Microsoft.Extensions.Logging.LogLevel
+        /// </summary>
+        private static MsLogLevel ConvertLogLevel(CoreLogLevel level)
+        {
+            return level switch
+            {
+                CoreLogLevel.Trace => MsLogLevel.Trace,
+                CoreLogLevel.Debug => MsLogLevel.Debug,
+                CoreLogLevel.Information => MsLogLevel.Information,
+                CoreLogLevel.Warning => MsLogLevel.Warning,
+                CoreLogLevel.Error => MsLogLevel.Error,
+                CoreLogLevel.Critical => MsLogLevel.Critical,
+                CoreLogLevel.None => MsLogLevel.None,
+                _ => MsLogLevel.Information
+            };
         }
         
         public async Task LogGenerationAsync(string configId, string step, TimeSpan duration, object? metadata = null)
@@ -49,7 +69,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 Category = "Generation"
             };
             
-            await LogAsync(LogLevel.Information, $"Generation step '{step}' completed in {duration.TotalMilliseconds:F2}ms", context);
+            await LogAsync(MsLogLevel.Information, $"Generation step '{step}' completed in {duration.TotalMilliseconds:F2}ms", context);
         }
         
         public async Task LogErrorAsync(Exception exception, string context, object? additionalData = null)
@@ -84,8 +104,8 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
             };
             
             var logLevel = duration.TotalMilliseconds > GetPerformanceThreshold(operation) 
-                ? LogLevel.Warning 
-                : LogLevel.Information;
+                ? MsLogLevel.Warning 
+                : MsLogLevel.Information;
             
             await LogAsync(logLevel, $"Operation '{operation}' took {duration.TotalMilliseconds:F2}ms", performanceContext);
         }
@@ -103,7 +123,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Services
                 Category = "Request"
             };
             
-            var logLevel = statusCode >= 400 ? LogLevel.Warning : LogLevel.Information;
+            var logLevel = statusCode >= 400 ? MsLogLevel.Warning : MsLogLevel.Information;
             
             await LogAsync(logLevel, $"{method} {path} responded {statusCode} in {duration.TotalMilliseconds:F2}ms", requestContext);
         }

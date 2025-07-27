@@ -18,6 +18,15 @@ namespace ProceduralMiniGameGenerator.Models
         public string ThemeName { get; set; } = "default";
         
         /// <summary>
+        /// Alias for ThemeName for backward compatibility
+        /// </summary>
+        public string Name 
+        { 
+            get => ThemeName; 
+            set => ThemeName = value; 
+        }
+        
+        /// <summary>
         /// Color palette for the theme
         /// </summary>
         public Dictionary<string, string> ColorPalette { get; set; } = new Dictionary<string, string>();

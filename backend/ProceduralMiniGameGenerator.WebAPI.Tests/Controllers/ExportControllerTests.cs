@@ -343,7 +343,7 @@ namespace ProceduralMiniGameGenerator.WebAPI.Tests.Controllers
             
             Assert.NotNull(jobStatus);
             Assert.Equal(jobId, jobStatus.JobId);
-            Assert.Contains(jobStatus.Status, new[] { "pending", "running", "completed", "failed" });
+            Assert.Contains(jobStatus.Status, new[] { JobStatusType.Pending, JobStatusType.Running, JobStatusType.Completed, JobStatusType.Failed });
         }
 
         [Fact]
